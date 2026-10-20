@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="VirtualFolders.Core/VirtualFolders.Core.csproj" />
+  <Project Path="VirtualFolders/VirtualFolders.csproj" />
+</Solution>
