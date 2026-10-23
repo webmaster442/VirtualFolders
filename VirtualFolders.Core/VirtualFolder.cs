@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+
 using VirtualFolders.Core.Format;
 
 namespace VirtualFolders.Core;
@@ -19,14 +20,14 @@ public sealed partial class VirtualFolder : ObservableObject
     [ObservableProperty]
     public partial FileSize TotalSize { get; private set; }
 
-    public VirtualFilesCollection Files { get; }
+    public BulkObservableCollection<VirtualFile> Files { get; }
 
     public VirtualFolder(string fileName)
     {
         _fileName = fileName;
         LastModified = DateTime.Now;
         Name = Path.GetFileName(_fileName);
-        Files = new VirtualFilesCollection();
+        Files = new BulkObservableCollection<VirtualFile>();
         Files.CollectionChanged += OnChange;
     }
 

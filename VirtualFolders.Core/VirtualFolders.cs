@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+
 using VirtualFolders.Core.Properties;
 
 namespace VirtualFolders.Core;
@@ -8,19 +11,24 @@ namespace VirtualFolders.Core;
 public sealed partial class VirtualFolders : ObservableObject
 {
     private readonly IDialogs _dialogs;
+    private readonly IClipboard _clipboard;
     private readonly string _filterstring;
     private readonly string _virtualFolderFilterString;
 
-    public VirtualFolders(IDialogs dialogs)
+    public VirtualFolders(IDialogs dialogs, IClipboard clipboard)
     {
         _dialogs = dialogs;
+        _clipboard = clipboard;
         _filterstring = new FilterstringBuilder().WithAllFiles().Build();
         _virtualFolderFilterString = new FilterstringBuilder().WithVirtualFolders().Build();
         Folders = new ObservableCollection<VirtualFolder>();
         ActualFolder = null;
+        Settings = new SettingsViewModel(dialogs);
     }
 
     public ObservableCollection<VirtualFolder> Folders { get; }
+
+    public SettingsViewModel Settings { get; }
 
     [ObservableProperty]
     public partial VirtualFolder? ActualFolder { get; set; }
@@ -37,6 +45,8 @@ public sealed partial class VirtualFolders : ObservableObject
         ExportZipCommand.NotifyCanExecuteChanged();
         ExportM3uCommand.NotifyCanExecuteChanged();
         ExportPlsCommand.NotifyCanExecuteChanged();
+        OpenSelectedCommand.NotifyCanExecuteChanged();
+        CopySelectedPathCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]
@@ -127,7 +137,7 @@ public sealed partial class VirtualFolders : ObservableObject
         }
     }
 
-    private bool CanRemoveSelected()
+    private bool HasSelectedItem()
     {
         return ActualFolder is not null
             && ActualFolder.SelectedFile is not null;
@@ -144,7 +154,7 @@ public sealed partial class VirtualFolders : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanRemoveSelected))]
+    [RelayCommand(CanExecute = nameof(HasSelectedItem))]
     public async Task RemoveSelected()
     {
         if (ActualFolder is not null
@@ -154,6 +164,29 @@ public sealed partial class VirtualFolders : ObservableObject
             ActualFolder.Files.Remove(ActualFolder.SelectedFile);
             ActualFolder.SelectedFile = null;
             await ActualFolder.Save();
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelectedItem))]
+    public void CopySelectedPath()
+    {
+        if (ActualFolder is not null
+            && ActualFolder.SelectedFile is not null)
+        {
+            _clipboard.SetText(ActualFolder.SelectedFile.FullPath);
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelectedItem))]
+    public void OpenSelected()
+    {
+        if (ActualFolder is not null
+            && ActualFolder.SelectedFile is not null)
+        {
+            using var process = new Process();
+            process.StartInfo.FileName = ActualFolder.SelectedFile.FullPath;
+            process.StartInfo.UseShellExecute = true;
+            process.Start();
         }
     }
 

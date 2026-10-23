@@ -3,22 +3,22 @@ using System.Collections.Specialized;
 
 namespace VirtualFolders.Core;
 
-public sealed class VirtualFilesCollection : ObservableCollection<VirtualFile>
+public sealed class BulkObservableCollection<T> : ObservableCollection<T>
 {
-    public void AddRange(IEnumerable<VirtualFile> files)
+    public void AddRange(IEnumerable<T> items)
     {
-        foreach (VirtualFile file in files)
+        foreach (T item in items)
         {
-            this.Items.Add(file);
+            this.Items.Add(item);
         }
         OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }
 
-    public void RemoveRange(IEnumerable<VirtualFile> files)
+    public void RemoveRange(IEnumerable<T> items)
     {
-        foreach (VirtualFile file in files)
+        foreach (T item in items)
         {
-            this.Items.Remove(file);
+            this.Items.Remove(item);
         }
         OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }

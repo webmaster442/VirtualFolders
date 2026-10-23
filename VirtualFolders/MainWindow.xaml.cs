@@ -7,10 +7,18 @@ namespace VirtualFolders;
 /// </summary>
 public partial class MainWindow
 {
+    private readonly Core.VirtualFolders _viewModel;
+
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = new Core.VirtualFolders(new Dialogs());
+        _viewModel = new Core.VirtualFolders(new Dialogs(), new Clipboard());
+        DataContext = _viewModel;
+    }
+
+    private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        await _viewModel.Settings.Load();
     }
 
     private void DecideDragDrop(DragEventArgs e)
