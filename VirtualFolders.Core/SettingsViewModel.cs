@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+using VirtualFolders.Core.Extensions;
 using VirtualFolders.Core.Format;
 
 namespace VirtualFolders.Core;
@@ -57,14 +58,22 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     public async Task Load()
     {
+        Programs.Clear();
+        var paths = Environment.GetEnvironmentVariable("path")?.Split(Path.PathSeparator) ?? Array.Empty<string>();
+        foreach (var programResolver in ProgramResolvers.Builtins)
+        {
+            var resolvedPrograms = programResolver.Resolve(paths);
+            Programs.AddRange(resolvedPrograms);
+        }
+
         if (!File.Exists(_settingsFilePath))
         {
             return;
         }
+
         ProgramSettings? settings = await ProgramSettingsFile.LoadFrom(_settingsFilePath, CancellationToken.None);
         if (settings != null)
         {
-            Programs.Clear();
             Programs.AddRange(settings.Programs.Select(p => new ProgramInformation
             {
                 DisplayName = Path.GetFileNameWithoutExtension(p),
