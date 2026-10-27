@@ -35,18 +35,16 @@ public sealed partial class VirtualFolders : ObservableObject
 
     partial void OnActualFolderChanged(VirtualFolder? value)
     {
+        OnPropertyChanged(nameof(HasOpenFolder));
         CloseActualFolderCommand.NotifyCanExecuteChanged();
         AddFilesCommand.NotifyCanExecuteChanged();
         AddFolderCommand.NotifyCanExecuteChanged();
-        RemoveSelectedCommand.NotifyCanExecuteChanged();
         RemoveAllCommand.NotifyCanExecuteChanged();
         RemoveNotExistingCommand.NotifyCanExecuteChanged();
         ExportToFolderCommand.NotifyCanExecuteChanged();
         ExportZipCommand.NotifyCanExecuteChanged();
         ExportM3uCommand.NotifyCanExecuteChanged();
         ExportPlsCommand.NotifyCanExecuteChanged();
-        OpenSelectedCommand.NotifyCanExecuteChanged();
-        CopySelectedPathCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]
@@ -56,7 +54,7 @@ public sealed partial class VirtualFolders : ObservableObject
         {
             try
             {
-                var newFolder = new VirtualFolder(filePath);
+                var newFolder = new VirtualFolder(filePath, _dialogs, _clipboard);
                 Folders.Add(newFolder);
                 ActualFolder = newFolder;
                 await newFolder.Save();
@@ -75,7 +73,7 @@ public sealed partial class VirtualFolders : ObservableObject
         {
             try
             {
-                VirtualFolder? folder = await VirtualFolder.LoadFile(filePath);
+                VirtualFolder? folder = await VirtualFolder.LoadFile(filePath, _dialogs, _clipboard);
                 if (folder == null)
                 {
                     _dialogs.Error(Resources.IdFileLoadFailed, Resources.IdError);
@@ -109,12 +107,12 @@ public sealed partial class VirtualFolders : ObservableObject
         ActualFolder = null;
     }
 
-    public bool HasOpenFolder()
-    {
-        return ActualFolder is not null;
-    }
+    public bool HasOpenFolder
+        => ActualFolder is not null;
 
-    [RelayCommand(CanExecute = nameof(HasOpenFolder))]
+    public bool HasOpenFolderCheck() => HasOpenFolder;
+
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
     public async Task AddFiles()
     {
         if (ActualFolder is not null &&
@@ -125,7 +123,7 @@ public sealed partial class VirtualFolders : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(HasOpenFolder))]
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
     public async Task AddFolder()
     {
         if (ActualFolder is not null &&
@@ -135,12 +133,6 @@ public sealed partial class VirtualFolders : ObservableObject
             ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x)));
             await ActualFolder.Save();
         }
-    }
-
-    private bool HasSelectedItem()
-    {
-        return ActualFolder is not null
-            && ActualFolder.SelectedFile is not null;
     }
 
     [RelayCommand]
@@ -154,47 +146,11 @@ public sealed partial class VirtualFolders : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(HasSelectedItem))]
-    public async Task RemoveSelected()
-    {
-        if (ActualFolder is not null
-            && ActualFolder.SelectedFile is not null
-            && _dialogs.YesNo(Resources.IdRemoveSelectedFile, Resources.IdConfirm))
-        {
-            ActualFolder.Files.Remove(ActualFolder.SelectedFile);
-            ActualFolder.SelectedFile = null;
-            await ActualFolder.Save();
-        }
-    }
-
-    [RelayCommand(CanExecute = nameof(HasSelectedItem))]
-    public void CopySelectedPath()
-    {
-        if (ActualFolder is not null
-            && ActualFolder.SelectedFile is not null)
-        {
-            _clipboard.SetText(ActualFolder.SelectedFile.FullPath);
-        }
-    }
-
-    [RelayCommand(CanExecute = nameof(HasSelectedItem))]
-    public void OpenSelected()
-    {
-        if (ActualFolder is not null
-            && ActualFolder.SelectedFile is not null)
-        {
-            using var process = new Process();
-            process.StartInfo.FileName = ActualFolder.SelectedFile.FullPath;
-            process.StartInfo.UseShellExecute = true;
-            process.Start();
-        }
-    }
-
-    [RelayCommand(CanExecute = nameof(HasOpenFolder))]
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
     public async Task RemoveNotExisting()
     {
         if (ActualFolder is not null
-            && _dialogs.YesNo(Resources.IdRemoveNotExistingFiles, Resources.IdConfirm))
+            && _dialogs.YesNo(Resources.IdRemoveNotExistingItems, Resources.IdConfirm))
         {
             var notExistingFiles = ActualFolder.Files.Where(x => !File.Exists(x.FullPath)).ToList();
             ActualFolder.Files.RemoveRange(notExistingFiles);
@@ -202,18 +158,18 @@ public sealed partial class VirtualFolders : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(HasOpenFolder))]
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
     public async Task RemoveAll()
     {
         if (ActualFolder is not null
-            && _dialogs.YesNo(Resources.IdRemoveAllFiles, Resources.IdConfirm))
+            && _dialogs.YesNo(Resources.IdRemoveAllItems, Resources.IdConfirm))
         {
             ActualFolder.Files.Clear();
             await ActualFolder.Save();
         }
     }
 
-    [RelayCommand(CanExecute = nameof(HasOpenFolder))]
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
     public async Task ExportZip()
     {
         if (ActualFolder is not null
@@ -224,7 +180,7 @@ public sealed partial class VirtualFolders : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(HasOpenFolder))]
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
     public async Task ExportToFolder()
     {
         if (ActualFolder is not null
@@ -235,7 +191,7 @@ public sealed partial class VirtualFolders : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(HasOpenFolder))]
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
     public async Task ExportM3u()
     {
         if (ActualFolder is not null
@@ -247,7 +203,7 @@ public sealed partial class VirtualFolders : ObservableObject
     }
 
 
-    [RelayCommand(CanExecute = nameof(HasOpenFolder))]
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
     public async Task ExportPls()
     {
         if (ActualFolder is not null

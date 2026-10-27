@@ -25,7 +25,7 @@ public partial class MainWindow
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop)
             && DataContext is Core.VirtualFolders vm
-            && vm.HasOpenFolder())
+            && vm.HasOpenFolder)
         {
             e.Effects = DragDropEffects.Copy;
         }

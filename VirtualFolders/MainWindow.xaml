@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Fluent="urn:fluent-ribbon"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:VirtualFolders"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -83,57 +84,60 @@
                         <Fluent:BackstageTabItem
                             DataContext="{Binding Settings}"
                             Header="Settings">
-                            <StackPanel Margin="8">
-                                <Expander
-                                    Header="Programs"
-                                    IsExpanded="True">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-                                        <ListBox
-                                            Grid.Row="0"
-                                            Grid.ColumnSpan="3"
-                                            Height="200"
-                                            ItemsSource="{Binding Programs}"
-                                            SelectedItem="{Binding SelectedProgram}">
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel>
-                                                        <TextBlock
-                                                            Margin="2"
-                                                            FontSize="14"
-                                                            Text="{Binding DisplayName}" />
-                                                        <TextBlock
-                                                            Margin="14,0"
-                                                            Text="{Binding ProgramPath}" />
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                        <Fluent:Button
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            Width="200"
-                                            Margin="4"
-                                            Command="{Binding AddProgramCommand}"
-                                            Header="Add..." />
-                                        <Fluent:Button
-                                            Grid.Row="1"
-                                            Grid.Column="2"
-                                            Width="200"
-                                            Margin="4"
-                                            Command="{Binding RemoveProgramCommand}"
-                                            Header="Remove selected" />
-                                    </Grid>
-                                </Expander>
-                            </StackPanel>
+                            <Grid Margin="8">
+                                <TabControl
+                                    Background="Transparent"
+                                    BorderThickness="0">
+                                    <TabItem Header="Programs">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <ListBox
+                                                Grid.Row="0"
+                                                Grid.ColumnSpan="3"
+                                                ItemsSource="{Binding Programs}"
+                                                SelectedItem="{Binding SelectedProgram}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <TextBlock
+                                                                Margin="2"
+                                                                FontSize="14"
+                                                                Text="{Binding DisplayName}" />
+                                                            <TextBlock
+                                                                Margin="14,0"
+                                                                Text="{Binding ProgramPath}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                            <Button
+                                                Grid.Row="1"
+                                                Grid.Column="1"
+                                                Width="200"
+                                                Height="28"
+                                                Margin="4"
+                                                Command="{Binding AddProgramCommand}"
+                                                Content="Add..." />
+                                            <Button
+                                                Grid.Row="1"
+                                                Grid.Column="2"
+                                                Width="200"
+                                                Height="28"
+                                                Margin="4"
+                                                Command="{Binding RemoveProgramCommand}"
+                                                Content="Remove selected" />
+                                        </Grid>
+                                    </TabItem>
+                                </TabControl>
+                            </Grid>
                         </Fluent:BackstageTabItem>
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
@@ -169,9 +173,11 @@
                         </Fluent:Button.LargeIcon>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-                <Fluent:RibbonGroupBox Header="Remove">
+                <Fluent:RibbonGroupBox
+                    Header="Remove"
+                    IsEnabled="{Binding HasOpenFolder}">
                     <Fluent:Button
-                        Command="{Binding RemoveSelectedCommand}"
+                        Command="{Binding ActualFolder.RemoveSelectedCommand}"
                         Header="Selected...">
                         <Fluent:Button.LargeIcon>
                             <Canvas
@@ -183,6 +189,20 @@
                             </Canvas>
                         </Fluent:Button.LargeIcon>
                     </Fluent:Button>
+                    <Fluent:Button
+                        Command="{Binding ActualFolder.RemoveDuplicatesCommand}"
+                        Header="Duplicates...">
+                        <Fluent:Button.LargeIcon>
+                            <Canvas
+                                Width="24"
+                                Height="24">
+                                <Path
+                                    Data="M11,17H4A2,2 0 0,1 2,15V3A2,2 0 0,1 4,1H16V3H4V15H11V13L15,16L11,19V17M19,21V7H8V13H6V7A2,2 0 0,1 8,5H19A2,2 0 0,1 21,7V21A2,2 0 0,1 19,23H8A2,2 0 0,1 6,21V19H8V21H19Z"
+                                    Fill="#c30052" />
+                            </Canvas>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
+
                     <Fluent:Button
                         Command="{Binding RemoveNotExistingCommand}"
                         Header="Not existing...">
@@ -211,10 +231,8 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Export">
-                    <Fluent:Button
-                        Command="{Binding ExportToFolderCommand}"
-                        Header="Copy to folder...">
-                        <Fluent:Button.LargeIcon>
+                    <Fluent:DropDownButton Header="Copy to folder...">
+                        <Fluent:DropDownButton.LargeIcon>
                             <Canvas
                                 Width="24"
                                 Height="24">
@@ -222,12 +240,14 @@
                                     Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"
                                     Fill="#8e8cd8" />
                             </Canvas>
-                        </Fluent:Button.LargeIcon>
-                    </Fluent:Button>
-                    <Fluent:Button
-                        Command="{Binding ExportZipCommand}"
-                        Header="Create .zip...">
-                        <Fluent:Button.LargeIcon>
+                        </Fluent:DropDownButton.LargeIcon>
+                        <Fluent:MenuItem
+                            Command="{Binding ExportToFolderCommand}"
+                            Header="Whole folder..." />
+                        <Fluent:MenuItem Header="Selected items..." />
+                    </Fluent:DropDownButton>
+                    <Fluent:DropDownButton Header="Create .zip...">
+                        <Fluent:DropDownButton.LargeIcon>
                             <Canvas
                                 Width="24"
                                 Height="24">
@@ -235,8 +255,12 @@
                                     Data="M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6M20 18H16V16H14V18H4V8H14V10H16V8H20V18M16 12V10H18V12H16M14 12H16V14H14V12M18 16H16V14H18V16Z"
                                     Fill="#6b69d6" />
                             </Canvas>
-                        </Fluent:Button.LargeIcon>
-                    </Fluent:Button>
+                        </Fluent:DropDownButton.LargeIcon>
+                        <Fluent:MenuItem
+                            Command="{Binding ExportZipCommand}"
+                            Header="Whole folder..." />
+                        <Fluent:MenuItem Header="Selected items..." />
+                    </Fluent:DropDownButton>
                     <Fluent:DropDownButton Header="Playlist">
                         <Fluent:DropDownButton.Icon>
                             <Canvas
@@ -270,8 +294,7 @@
         <TabControl
             Grid.Row="1"
             ItemsSource="{Binding Folders}"
-            SelectedItem="{Binding ActualFolder}"
-            Tag="{Binding}">
+            SelectedItem="{Binding ActualFolder}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -299,6 +322,7 @@
                         <DataGrid
                             x:Name="DataGrid"
                             Grid.Row="0"
+                            dgx:DataGridFilter.IsAutoFilterEnabled="True"
                             AutoGenerateColumns="False"
                             CanUserAddRows="False"
                             CanUserDeleteRows="False"
@@ -307,20 +331,23 @@
                             CanUserSortColumns="True"
                             IsReadOnly="True"
                             ItemsSource="{Binding Files}"
-                            SelectedItem="{Binding SelectedFile}">
+                            SelectionMode="Extended">
+                            <i:Interaction.Behaviors>
+                                <ui:SelectedItemsBehaviour SelectedItems="{Binding SelectedItems}" />
+                            </i:Interaction.Behaviors>
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem
-                                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}, Path=Tag.OpenSelectedCommand}"
+                                        Command="{Binding OpenSelectedCommand}"
                                         Header="Open" />
                                     <MenuItem Header="Open With" />
                                     <Separator />
                                     <MenuItem
-                                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}, Path=Tag.CopySelectedPathCommand}"
+                                        Command="{Binding CopySelectedPathCommand}"
                                         Header="Copy path to clipboard" />
                                     <Separator />
                                     <MenuItem
-                                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}, Path=Tag.RemoveSelectedCommand}"
+                                        Command="{Binding RemoveSelectedCommand}"
                                         Header="Remove" />
                                 </ContextMenu>
                             </DataGrid.ContextMenu>

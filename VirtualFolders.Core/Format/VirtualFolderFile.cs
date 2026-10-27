@@ -4,7 +4,7 @@ namespace VirtualFolders.Core.Format;
 
 internal static class VirtualFolderFile
 {
-    public static async Task<VirtualFolder?> LoadFrom(string fileName, CancellationToken cancellationToken)
+    public static async Task<VirtualFolder?> LoadFrom(string fileName, IDialogs dialogs, IClipboard clipboard, CancellationToken cancellationToken)
     {
         await using var stream = File.OpenRead(fileName);
 
@@ -16,7 +16,7 @@ internal static class VirtualFolderFile
         if (folder == null)
             return null;
 
-        VirtualFolder result = new(fileName);
+        VirtualFolder result = new(fileName, dialogs, clipboard);
         foreach (var file in folder.Files)
         {
             result.Files.Add(VirtualFile.CreateFromFilePath(file.Path, file.Added.ToLocalTime()));

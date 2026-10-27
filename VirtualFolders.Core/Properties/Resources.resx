@@ -159,13 +159,16 @@
   <data name="IdOpenVirtualFolder" xml:space="preserve">
     <value>Open Virtual Folder...</value>
   </data>
-  <data name="IdRemoveAllFiles" xml:space="preserve">
-    <value>Are you sure you want to remove all files from the folder?</value>
+  <data name="IdRemoveNotExistingItems" xml:space="preserve">
+    <value>Are you sure you want to remove not existing items?</value>
   </data>
-  <data name="IdRemoveNotExistingFiles" xml:space="preserve">
-    <value>Are you sure you want to remove not existing files?</value>
+  <data name="IdRemoveAllItems" xml:space="preserve">
+    <value>Are you sure you want to remove all items from the folder?</value>
   </data>
-  <data name="IdRemoveSelectedFile" xml:space="preserve">
-    <value>Are you sure you want to remove the selected file?</value>
+  <data name="IdRemoveDuplicates" xml:space="preserve">
+    <value>Are you sure you want to remove duplicate items?</value>
+  </data>
+  <data name="IdRemoveSelectedItems" xml:space="preserve">
+    <value>Are you sure you want to remove the selected items?</value>
   </data>
 </root>

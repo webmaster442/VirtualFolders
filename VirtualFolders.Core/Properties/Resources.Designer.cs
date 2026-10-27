@@ -187,29 +187,38 @@ namespace VirtualFolders.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to remove all files from the folder?.
+        ///   Looks up a localized string similar to Are you sure you want to remove all items from the folder?.
         /// </summary>
-        internal static string IdRemoveAllFiles {
+        internal static string IdRemoveAllItems {
             get {
-                return ResourceManager.GetString("IdRemoveAllFiles", resourceCulture);
+                return ResourceManager.GetString("IdRemoveAllItems", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to remove not existing files?.
+        ///   Looks up a localized string similar to Are you sure you want to remove duplicate items?.
         /// </summary>
-        internal static string IdRemoveNotExistingFiles {
+        internal static string IdRemoveDuplicates {
             get {
-                return ResourceManager.GetString("IdRemoveNotExistingFiles", resourceCulture);
+                return ResourceManager.GetString("IdRemoveDuplicates", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to remove the selected file?.
+        ///   Looks up a localized string similar to Are you sure you want to remove not existing items?.
         /// </summary>
-        internal static string IdRemoveSelectedFile {
+        internal static string IdRemoveNotExistingItems {
             get {
-                return ResourceManager.GetString("IdRemoveSelectedFile", resourceCulture);
+                return ResourceManager.GetString("IdRemoveNotExistingItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove the selected items?.
+        /// </summary>
+        internal static string IdRemoveSelectedItems {
+            get {
+                return ResourceManager.GetString("IdRemoveSelectedItems", resourceCulture);
             }
         }
     }
