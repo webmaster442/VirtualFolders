@@ -1,0 +1,153 @@
+﻿using System.Collections.Concurrent;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
+namespace VirtualFolders.Ui;
+
+internal sealed class FileIconConverter : OneWayConverter<string, ImageSource>
+{
+    private readonly ConcurrentDictionary<string, ImageSource> _cache;
+
+    public FileIconConverter()
+    {
+        _cache = new ConcurrentDictionary<string, ImageSource>();
+    }
+
+    protected override ImageSource Convert(string sourceValue, object parameter, CultureInfo culture)
+    {
+        var extension = System.IO.Path.GetExtension(sourceValue);
+        if (string.Equals(extension, ".exe", StringComparison.OrdinalIgnoreCase))
+        {
+            var name = System.IO.Path.GetFileName(sourceValue);
+            if (_cache.TryGetValue(name, out ImageSource? image))
+            {
+                return image;
+            }
+            else
+            {
+                var extractedImage = GetIcon(sourceValue, false);
+                _cache.TryAdd(name, extractedImage);
+                return extractedImage;
+            }
+        }
+        else
+        {
+            if (_cache.TryGetValue(extension, out ImageSource? image))
+            {
+                return image;
+            }
+            else
+            {
+                var extracted = GetIcon(sourceValue, false);
+                _cache.TryAdd(extension, extracted);
+                return extracted;
+            }
+        }
+    }
+
+    private static ImageSource GetIcon(string strPath, bool bSmall)
+    {
+        SHFILEINFO info = new SHFILEINFO(true);
+        int cbFileInfo = Marshal.SizeOf(info);
+        SHGFI flags;
+        if (bSmall)
+            flags = SHGFI.Icon | SHGFI.SmallIcon | SHGFI.UseFileAttributes;
+        else
+            flags = SHGFI.Icon | SHGFI.LargeIcon | SHGFI.UseFileAttributes;
+
+        SHGetFileInfo(strPath, 256, out info, (uint)cbFileInfo, flags);
+
+        IntPtr iconHandle = info.hIcon;
+        //if (IntPtr.Zero == iconHandle) // not needed, always return icon (blank)
+        //  return DefaultImgSrc;
+
+        ImageSource img = Imaging.CreateBitmapSourceFromHIcon(
+                    iconHandle,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+
+        DestroyIcon(iconHandle);
+        return img;
+    }
+
+    [Flags]
+    public enum SHGFI : int
+    {
+        /// <summary>get icon</summary>
+        Icon = 0x000000100,
+        /// <summary>get display name</summary>
+        DisplayName = 0x000000200,
+        /// <summary>get type name</summary>
+        TypeName = 0x000000400,
+        /// <summary>get attributes</summary>
+        Attributes = 0x000000800,
+        /// <summary>get icon location</summary>
+        IconLocation = 0x000001000,
+        /// <summary>return exe type</summary>
+        ExeType = 0x000002000,
+        /// <summary>get system icon index</summary>
+        SysIconIndex = 0x000004000,
+        /// <summary>put a link overlay on icon</summary>
+        LinkOverlay = 0x000008000,
+        /// <summary>show icon in selected state</summary>
+        Selected = 0x000010000,
+        /// <summary>get only specified attributes</summary>
+        Attr_Specified = 0x000020000,
+        /// <summary>get large icon</summary>
+        LargeIcon = 0x000000000,
+        /// <summary>get small icon</summary>
+        SmallIcon = 0x000000001,
+        /// <summary>get open icon</summary>
+        OpenIcon = 0x000000002,
+        /// <summary>get shell size icon</summary>
+        ShellIconSize = 0x000000004,
+        /// <summary>pszPath is a pidl</summary>
+        PIDL = 0x000000008,
+        /// <summary>use passed dwFileAttribute</summary>
+        UseFileAttributes = 0x000000010,
+        /// <summary>apply the appropriate overlays</summary>
+        AddOverlays = 0x000000020,
+        /// <summary>Get the index of the overlay in the upper 8 bits of the iIcon</summary>
+        OverlayIndex = 0x000000040,
+    }
+
+    /// <summary>Maximal Length of unmanaged Windows-Path-strings</summary>
+    private const int MAX_PATH = 260;
+    /// <summary>Maximal Length of unmanaged Typename</summary>
+    private const int MAX_TYPE = 80;
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct SHFILEINFO
+    {
+        public SHFILEINFO(bool b)
+        {
+            hIcon = IntPtr.Zero;
+            iIcon = 0;
+            dwAttributes = 0;
+            szDisplayName = "";
+            szTypeName = "";
+        }
+        public IntPtr hIcon;
+        public int iIcon;
+        public uint dwAttributes;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+        public string szDisplayName;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_TYPE)]
+        public string szTypeName;
+    };
+
+    [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+    public static extern int SHGetFileInfo(
+      string pszPath,
+      int dwFileAttributes,
+      out SHFILEINFO psfi,
+      uint cbfileInfo,
+      SHGFI uFlags);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern bool DestroyIcon(IntPtr hIcon);
+}
