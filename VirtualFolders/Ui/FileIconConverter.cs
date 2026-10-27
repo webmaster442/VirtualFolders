@@ -23,14 +23,14 @@ internal sealed class FileIconConverter : OneWayConverter<string, ImageSource>
         if (string.Equals(extension, ".exe", StringComparison.OrdinalIgnoreCase))
         {
             var name = System.IO.Path.GetFileName(sourceValue);
-            if (_cache.TryGetValue(name, out ImageSource? image))
+            if (_cache.TryGetValue(sourceValue, out ImageSource? image))
             {
                 return image;
             }
             else
             {
                 var extractedImage = GetIcon(sourceValue, false);
-                _cache.TryAdd(name, extractedImage);
+                _cache.TryAdd(sourceValue, extractedImage);
                 return extractedImage;
             }
         }
@@ -69,6 +69,10 @@ internal sealed class FileIconConverter : OneWayConverter<string, ImageSource>
                     iconHandle,
                     Int32Rect.Empty,
                     BitmapSizeOptions.FromEmptyOptions());
+
+        if (img.CanFreeze)
+            img.Freeze();
+
 
         DestroyIcon(iconHandle);
         return img;

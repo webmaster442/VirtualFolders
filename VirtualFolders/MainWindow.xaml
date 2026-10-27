@@ -415,7 +415,6 @@
                                                     <Setter.Value>
                                                         <Image
                                                             Width="16"
-                                                            Height="16"
                                                             Source="{Binding ProgramPath, Converter={ui:FileIconConverter}}" />
                                                     </Setter.Value>
                                                 </Setter>
@@ -437,6 +436,18 @@
                             </DataGrid.ContextMenu>
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn
+                                    Width="Auto"
+                                    IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image
+                                                Width="24"
+                                                Margin="2"
+                                                Source="{Binding FullPath, Converter={ui:FileIconConverter}}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn
                                     Width="*"
                                     MinWidth="100"
                                     CanUserSort="True"
@@ -446,6 +457,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock
+                                                VerticalAlignment="Center"
                                                 FontSize="{Binding ElementName=ZoomSlider, Path=Value}"
                                                 Text="{Binding Name}"
                                                 TextDecorations="{Binding IsAvailable, Converter={ui:IsAvailableConverter}}"
@@ -475,6 +487,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock
+                                                VerticalAlignment="Center"
                                                 FontSize="{Binding ElementName=ZoomSlider, Path=Value}"
                                                 Text="{Binding Extension}"
                                                 TextAlignment="Center"
@@ -504,6 +517,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock
+                                                VerticalAlignment="Center"
                                                 FontSize="{Binding ElementName=ZoomSlider, Path=Value}"
                                                 Text="{Binding FileSize}"
                                                 TextAlignment="Center">
@@ -532,6 +546,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock
+                                                VerticalAlignment="Center"
                                                 FontSize="{Binding ElementName=ZoomSlider, Path=Value}"
                                                 Text="{Binding Attributes, Converter={ui:AttributesTextConverter}}"
                                                 TextAlignment="Center"
@@ -561,6 +576,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock
+                                                VerticalAlignment="Center"
                                                 FontSize="{Binding ElementName=ZoomSlider, Path=Value}"
                                                 Text="{Binding Created, Converter={ui:TimeConverter}}"
                                                 TextAlignment="Center"
@@ -590,6 +606,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock
+                                                VerticalAlignment="Center"
                                                 FontSize="{Binding ElementName=ZoomSlider, Path=Value}"
                                                 Text="{Binding LastModified, Converter={ui:TimeConverter}}"
                                                 TextAlignment="Center"
@@ -619,6 +636,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock
+                                                VerticalAlignment="Center"
                                                 FontSize="{Binding ElementName=ZoomSlider, Path=Value}"
                                                 Text="{Binding Added, Converter={ui:TimeConverter}}"
                                                 TextAlignment="Center"
