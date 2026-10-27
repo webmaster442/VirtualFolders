@@ -169,24 +169,24 @@ public sealed partial class VirtualFolders : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
-    public async Task ExportZip()
-    {
-        if (ActualFolder is not null
-            && _dialogs.TrySaveFile(Resources.IdExportZip, "Zip Files (*.zip)|*.zip", out string? targetFile))
-        {
-            IFileOperationProgress progress = _dialogs.ShowFileOperationProgress(Resources.IdCompressingFiles);
-            await FileOperations.CreateZipFromVirtualFolder(ActualFolder, targetFile, progress);
-        }
-    }
-
-    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
     public async Task ExportToFolder()
     {
         if (ActualFolder is not null
             && _dialogs.TryOpenFolder(Resources.IdExportFolder, out string? targetFolder))
         {
             IFileOperationProgress progress = _dialogs.ShowFileOperationProgress(Resources.IdCopyFiles);
-            await FileOperations.CopyVirtualFolderToDirectory(ActualFolder, targetFolder, progress);
+            await FileOperations.CopyVirtualFolderToDirectory(ActualFolder.Files, targetFolder, progress);
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
+    public async Task ExportZip()
+    {
+        if (ActualFolder is not null
+            && _dialogs.TrySaveFile(Resources.IdExportZip, "Zip Files (*.zip)|*.zip", out string? targetFile))
+        {
+            IFileOperationProgress progress = _dialogs.ShowFileOperationProgress(Resources.IdCompressingFiles);
+            await FileOperations.CreateZipFromVirtualFolder(ActualFolder.Files, targetFile, progress);
         }
     }
 
@@ -197,7 +197,7 @@ public sealed partial class VirtualFolders : ObservableObject
             && _dialogs.TrySaveFile(Resources.IdExportPlaylist, "M3U Files (*.m3u)|*.m3u", out string? targetFile))
         {
             IFileOperationProgress progress = _dialogs.ShowFileOperationProgress(Resources.IdExportPlaylist);
-            await FileOperations.ExportM3U(ActualFolder, targetFile, progress);
+            await FileOperations.ExportM3U(ActualFolder.Files, targetFile, progress);
         }
     }
 
@@ -209,7 +209,56 @@ public sealed partial class VirtualFolders : ObservableObject
             && _dialogs.TrySaveFile(Resources.IdExportPlaylist, "PLS Files (*.pls)|*.pls", out string? targetFile))
         {
             IFileOperationProgress progress = _dialogs.ShowFileOperationProgress(Resources.IdExportPlaylist);
-            await FileOperations.ExportPls(ActualFolder, targetFile, progress);
+            await FileOperations.ExportPls(ActualFolder.Files, targetFile, progress);
+        }
+    }
+
+    [RelayCommand]
+    public async Task ExportSelectedToFolder()
+    {
+        if (ActualFolder is not null
+            && ActualFolder.HasSelectedItems
+            && _dialogs.TryOpenFolder(Resources.IdExportFolder, out string? targetFolder))
+        {
+            IFileOperationProgress progress = _dialogs.ShowFileOperationProgress(Resources.IdCopyFiles);
+            await FileOperations.CopyVirtualFolderToDirectory(ActualFolder.SelectedItems, targetFolder, progress);
+        }
+    }
+
+    [RelayCommand]
+    public async Task ExportSelectedZip()
+    {
+        if (ActualFolder is not null
+            && ActualFolder.HasSelectedItems
+            && _dialogs.TrySaveFile(Resources.IdExportZip, "Zip Files (*.zip)|*.zip", out string? targetFile))
+        {
+            IFileOperationProgress progress = _dialogs.ShowFileOperationProgress(Resources.IdCompressingFiles);
+            await FileOperations.CreateZipFromVirtualFolder(ActualFolder.SelectedItems, targetFile, progress);
+        }
+    }
+
+    [RelayCommand]
+    public async Task ExportSelectedM3u()
+    {
+        if (ActualFolder is not null
+            && ActualFolder.HasSelectedItems
+            && _dialogs.TrySaveFile(Resources.IdExportPlaylist, "M3U Files (*.m3u)|*.m3u", out string? targetFile))
+        {
+            IFileOperationProgress progress = _dialogs.ShowFileOperationProgress(Resources.IdExportPlaylist);
+            await FileOperations.ExportM3U(ActualFolder.SelectedItems, targetFile, progress);
+        }
+    }
+
+
+    [RelayCommand]
+    public async Task ExportSelectedPls()
+    {
+        if (ActualFolder is not null
+            && ActualFolder.HasSelectedItems
+            && _dialogs.TrySaveFile(Resources.IdExportPlaylist, "PLS Files (*.pls)|*.pls", out string? targetFile))
+        {
+            IFileOperationProgress progress = _dialogs.ShowFileOperationProgress(Resources.IdExportPlaylist);
+            await FileOperations.ExportPls(ActualFolder.SelectedItems, targetFile, progress);
         }
     }
 }

@@ -18,6 +18,9 @@
     Drop="RibbonWindow_Drop"
     Loaded="RibbonWindow_Loaded"
     mc:Ignorable="d">
+    <Fluent:RibbonWindow.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Fluent:RibbonWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -231,8 +234,10 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Export">
-                    <Fluent:DropDownButton Header="Copy to folder...">
-                        <Fluent:DropDownButton.LargeIcon>
+                    <Fluent:Button
+                        Command="{Binding ExportSelectedToFolderCommand}"
+                        Header="Copy to folder...">
+                        <Fluent:Button.LargeIcon>
                             <Canvas
                                 Width="24"
                                 Height="24">
@@ -240,14 +245,12 @@
                                     Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"
                                     Fill="#8e8cd8" />
                             </Canvas>
-                        </Fluent:DropDownButton.LargeIcon>
-                        <Fluent:MenuItem
-                            Command="{Binding ExportToFolderCommand}"
-                            Header="Whole folder..." />
-                        <Fluent:MenuItem Header="Selected items..." />
-                    </Fluent:DropDownButton>
-                    <Fluent:DropDownButton Header="Create .zip...">
-                        <Fluent:DropDownButton.LargeIcon>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
+                    <Fluent:Button
+                        Command="{Binding ExportSelectedZipCommand}"
+                        Header="Create .zip...">
+                        <Fluent:Button.LargeIcon>
                             <Canvas
                                 Width="24"
                                 Height="24">
@@ -255,12 +258,65 @@
                                     Data="M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6M20 18H16V16H14V18H4V8H14V10H16V8H20V18M16 12V10H18V12H16M14 12H16V14H14V12M18 16H16V14H18V16Z"
                                     Fill="#6b69d6" />
                             </Canvas>
-                        </Fluent:DropDownButton.LargeIcon>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
+                    <Fluent:DropDownButton Header="Playlist">
+                        <Fluent:DropDownButton.Icon>
+                            <Canvas
+                                Width="24"
+                                Height="24">
+                                <Path
+                                    Data="M23 19L20 16V18H16V20H20V22L23 19M13.8 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2H14L20 8V13.1C19.7 13 19.3 13 19 13S18.3 13 18 13.1V9H13V4H6V20H13.1C13.2 20.7 13.5 21.4 13.8 22M8 12H16V13.8C15.9 13.9 15.8 13.9 15.7 14H8V12M8 16H13V18H8V16Z"
+                                    Fill="#000000" />
+                            </Canvas>
+                        </Fluent:DropDownButton.Icon>
                         <Fluent:MenuItem
-                            Command="{Binding ExportZipCommand}"
-                            Header="Whole folder..." />
-                        <Fluent:MenuItem Header="Selected items..." />
+                            Command="{Binding ExportSelectedM3uCommand}"
+                            Header="M3U..">
+                            <Fluent:MenuItem.Icon>
+                                <TextBlock Text="M" />
+                            </Fluent:MenuItem.Icon>
+                        </Fluent:MenuItem>
+                        <Fluent:MenuItem
+                            Command="{Binding ExportSelectedPlsCommand}"
+                            Header="PLS..">
+                            <Fluent:MenuItem.Icon>
+                                <TextBlock Text="P" />
+                            </Fluent:MenuItem.Icon>
+                        </Fluent:MenuItem>
                     </Fluent:DropDownButton>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem
+                Group="{Binding Source={x:Reference SelectedGroup}}"
+                Header="Selected">
+                <Fluent:RibbonGroupBox Header="Export">
+                    <Fluent:Button
+                        Command="{Binding ExportToFolderCommand}"
+                        Header="Copy to folder...">
+                        <Fluent:Button.LargeIcon>
+                            <Canvas
+                                Width="24"
+                                Height="24">
+                                <Path
+                                    Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"
+                                    Fill="#8e8cd8" />
+                            </Canvas>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
+                    <Fluent:Button
+                        Command="{Binding ExportZipCommand}"
+                        Header="Create .zip...">
+                        <Fluent:Button.LargeIcon>
+                            <Canvas
+                                Width="24"
+                                Height="24">
+                                <Path
+                                    Data="M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6M20 18H16V16H14V18H4V8H14V10H16V8H20V18M16 12V10H18V12H16M14 12H16V14H14V12M18 16H16V14H18V16Z"
+                                    Fill="#6b69d6" />
+                            </Canvas>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
                     <Fluent:DropDownButton Header="Playlist">
                         <Fluent:DropDownButton.Icon>
                             <Canvas
@@ -288,13 +344,22 @@
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
+            <Fluent:Ribbon.ContextualGroups>
+                <Fluent:RibbonContextualTabGroup
+                    x:Name="SelectedGroup"
+                    Background="Green"
+                    BorderBrush="Green"
+                    Header="Selected"
+                    Visibility="{Binding ActualFolder.HasSelectedItems, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </Fluent:Ribbon.ContextualGroups>
         </Fluent:Ribbon>
 
         <!--  Main Content Area  -->
         <TabControl
             Grid.Row="1"
             ItemsSource="{Binding Folders}"
-            SelectedItem="{Binding ActualFolder}">
+            SelectedItem="{Binding ActualFolder}"
+            Tag="{Binding}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -331,16 +396,27 @@
                             CanUserSortColumns="True"
                             IsReadOnly="True"
                             ItemsSource="{Binding Files}"
-                            SelectionMode="Extended">
+                            SelectionMode="Extended"
+                            Tag="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}, Path=Tag}">
                             <i:Interaction.Behaviors>
                                 <ui:SelectedItemsBehaviour SelectedItems="{Binding SelectedItems}" />
                             </i:Interaction.Behaviors>
                             <DataGrid.ContextMenu>
-                                <ContextMenu>
+                                <ContextMenu x:Name="ContextMenu">
                                     <MenuItem
                                         Command="{Binding OpenSelectedCommand}"
                                         Header="Open" />
-                                    <MenuItem Header="Open With" />
+                                    <MenuItem
+                                        Header="Open With"
+                                        ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.Tag.Settings.Programs}">
+                                        <MenuItem.ItemContainerStyle>
+                                            <Style TargetType="MenuItem">
+                                                <Setter Property="Header" Value="{Binding DisplayName}" />
+                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.Tag.ActualFolder.OpenSelectedWithCommand}"></Setter>
+                                                <Setter Property="CommandParameter" Value="{Binding}"/>
+                                            </Style>
+                                        </MenuItem.ItemContainerStyle>
+                                    </MenuItem>
                                     <Separator />
                                     <MenuItem
                                         Command="{Binding CopySelectedPathCommand}"

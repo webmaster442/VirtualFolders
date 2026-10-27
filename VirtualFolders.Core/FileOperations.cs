@@ -5,9 +5,9 @@ namespace VirtualFolders.Core;
 
 internal static class FileOperations
 {
-    public static async Task CopyVirtualFolderToDirectory(VirtualFolder folder, string destinationDirectory, IFileOperationProgress progress)
+    public static async Task CopyVirtualFolderToDirectory(IReadOnlyList<VirtualFile> folder, string destinationDirectory, IFileOperationProgress progress)
     {
-        FileOperationState state = new(folder.Files.Sum(x => x.FileSize.TotalBytes));
+        FileOperationState state = new(folder.Sum(x => x.FileSize.TotalBytes));
         state.Initialize(progress);
 
         byte[] buffer = ArrayPool<byte>.Shared.Rent(16 * 1024);
@@ -17,7 +17,7 @@ internal static class FileOperations
 
         try
         {
-            foreach (VirtualFile file in folder.Files)
+            foreach (VirtualFile file in folder)
             {
                 progress.CancellationToken.ThrowIfCancellationRequested();
                 state.NewFile(file.FileSize, progress);
@@ -46,9 +46,9 @@ internal static class FileOperations
         }
     }
 
-    public static async Task CreateZipFromVirtualFolder(VirtualFolder folder, string destinationFile, IFileOperationProgress progress)
+    public static async Task CreateZipFromVirtualFolder(IReadOnlyList<VirtualFile> folder, string destinationFile, IFileOperationProgress progress)
     {
-        FileOperationState state = new(folder.Files.Sum(x => x.FileSize.TotalBytes));
+        FileOperationState state = new(folder.Sum(x => x.FileSize.TotalBytes));
         state.Initialize(progress);
 
         byte[] buffer = ArrayPool<byte>.Shared.Rent(16 * 1024);
@@ -62,7 +62,7 @@ internal static class FileOperations
             {
                 using (var archive = new ZipArchive(targetStream, ZipArchiveMode.Create))
                 {
-                    foreach (VirtualFile file in folder.Files)
+                    foreach (VirtualFile file in folder)
                     {
                         progress.CancellationToken.ThrowIfCancellationRequested();
                         state.NewFile(file.FileSize, progress);
@@ -93,9 +93,9 @@ internal static class FileOperations
         }
     }
 
-    public static async Task ExportM3U(VirtualFolder folder, string destinationFile, IFileOperationProgress progress)
+    public static async Task ExportM3U(IReadOnlyList<VirtualFile> folder, string destinationFile, IFileOperationProgress progress)
     {
-        FileOperationState state = new(folder.Files.Count);
+        FileOperationState state = new(folder.Count);
         state.Initialize(progress);
 
         progress.ShowDialog();
@@ -104,10 +104,10 @@ internal static class FileOperations
         {
             using (FileStream targetStream = File.Create(destinationFile))
             {
-                state.NewFile(folder.Files.Count, progress);
+                state.NewFile(folder.Count, progress);
                 using (StreamWriter writer = new(targetStream))
                 {
-                    foreach (VirtualFile file in folder.Files)
+                    foreach (VirtualFile file in folder)
                     {
                         progress.CancellationToken.ThrowIfCancellationRequested();
                         await writer.WriteLineAsync(file.Name, progress.CancellationToken);
@@ -123,9 +123,9 @@ internal static class FileOperations
         }
     }
 
-    public static async Task ExportPls(VirtualFolder folder, string destinationFile, IFileOperationProgress progress)
+    public static async Task ExportPls(IReadOnlyList<VirtualFile> folder, string destinationFile, IFileOperationProgress progress)
     {
-        FileOperationState state = new(folder.Files.Count);
+        FileOperationState state = new(folder.Count);
         state.Initialize(progress);
         progress.ShowDialog();
 
@@ -133,12 +133,12 @@ internal static class FileOperations
         {
             using (FileStream targetStream = File.Create(destinationFile))
             {
-                state.NewFile(folder.Files.Count, progress);
+                state.NewFile(folder.Count, progress);
                 int index = 1;
                 using (StreamWriter writer = new(targetStream))
                 {
                     await writer.WriteLineAsync("[playlist]", progress.CancellationToken);
-                    foreach (VirtualFile file in folder.Files)
+                    foreach (VirtualFile file in folder)
                     {
                         progress.CancellationToken.ThrowIfCancellationRequested();
                         await writer.WriteLineAsync($"File{index}={file.FullPath}", progress.CancellationToken);

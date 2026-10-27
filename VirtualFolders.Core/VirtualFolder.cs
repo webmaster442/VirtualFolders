@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -21,8 +22,11 @@ public sealed partial class VirtualFolder : ObservableObject
 
     public BulkObservableCollection<VirtualFile> SelectedItems { get; set; }
 
-    private bool HasSelectedItem() 
+    public bool HasSelectedItems
         => SelectedItems.Count > 0;
+
+    private bool HasSelectedItemCheck()
+        => HasSelectedItems;
 
     [ObservableProperty]
     public partial FileSize TotalSize { get; private set; }
@@ -47,6 +51,7 @@ public sealed partial class VirtualFolder : ObservableObject
 
     private void OnSelectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        OnPropertyChanged(nameof(HasSelectedItems));
         RemoveSelectedCommand.NotifyCanExecuteChanged();
         OpenSelectedCommand.NotifyCanExecuteChanged();
         CopySelectedPathCommand.NotifyCanExecuteChanged();
@@ -66,7 +71,7 @@ public sealed partial class VirtualFolder : ObservableObject
         await VirtualFolderFile.SaveTo(_fileName, this, CancellationToken.None);
     }
 
-    [RelayCommand(CanExecute = nameof(HasSelectedItem))]
+    [RelayCommand(CanExecute = nameof(HasSelectedItemCheck))]
     public async Task RemoveSelected()
     {
         if (SelectedItems.Count > 0
@@ -97,7 +102,7 @@ public sealed partial class VirtualFolder : ObservableObject
     }
 
 
-    [RelayCommand(CanExecute = nameof(HasSelectedItem))]
+    [RelayCommand(CanExecute = nameof(HasSelectedItemCheck))]
     public void OpenSelected()
     {
         if (SelectedItems.Count > 0)
@@ -113,7 +118,21 @@ public sealed partial class VirtualFolder : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(HasSelectedItem))]
+    [RelayCommand(CanExecute = nameof(HasSelectedItemCheck))]
+    public void OpenSelectedWith(ProgramInformation programInformation)
+    {
+        if (SelectedItems.Count > 0)
+        {
+            var files = string.Join(" ", SelectedItems.Select(f => $"\"{f.FullPath}\""));
+            using var process = new Process();
+            process.StartInfo.FileName = programInformation.ProgramPath;
+            process.StartInfo.Arguments = files;
+            process.StartInfo.UseShellExecute = false;
+            process.Start();
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelectedItemCheck))]
     public void CopySelectedPath()
     {
         if (SelectedItems.Count > 0)
