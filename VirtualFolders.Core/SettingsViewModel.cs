@@ -39,7 +39,8 @@ public sealed partial class SettingsViewModel : ObservableObject
             var programInfo = new ProgramInformation
             {
                 DisplayName = Path.GetFileNameWithoutExtension(programPath),
-                ProgramPath = programPath
+                ProgramPath = programPath,
+                IsAutoCreated = false
             };
             Programs.Add(programInfo);
         }
@@ -77,7 +78,8 @@ public sealed partial class SettingsViewModel : ObservableObject
             Programs.AddRange(settings.Programs.Select(p => new ProgramInformation
             {
                 DisplayName = Path.GetFileNameWithoutExtension(p),
-                ProgramPath = p
+                ProgramPath = p,
+                IsAutoCreated = false
             }));
         }
     }
@@ -86,7 +88,10 @@ public sealed partial class SettingsViewModel : ObservableObject
     {
         ProgramSettings settings = new ProgramSettings
         {
-            Programs = Programs.Select(p => p.ProgramPath).ToList()
+            Programs = Programs
+                .Where(p => !p.IsAutoCreated)
+                .Select(p => p.ProgramPath)
+                .ToList()
         };
         await ProgramSettingsFile.SaveTo(_settingsFilePath, settings, CancellationToken.None);
     }

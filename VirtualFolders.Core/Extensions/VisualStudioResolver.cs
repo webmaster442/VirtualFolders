@@ -29,7 +29,8 @@ internal sealed class VisualStudioResolver : IProgramResolver
                 yield return new ProgramInformation
                 {
                     ProgramPath = codePath,
-                    DisplayName = "Visual Studio Code"
+                    DisplayName = "Visual Studio Code",
+                    IsAutoCreated = true
                 };
             }
         }
@@ -52,7 +53,8 @@ internal sealed class VisualStudioResolver : IProgramResolver
                         yield return new ProgramInformation
                         {
                             ProgramPath = devenvPath,
-                            DisplayName = $"Visual Studio {Path.GetFileName(displayVersion)} {Path.GetFileName(edition)}"
+                            DisplayName = $"Visual Studio {Path.GetFileName(displayVersion)} {Path.GetFileName(edition)}",
+                            IsAutoCreated = true
                         };
                     }
                 }
