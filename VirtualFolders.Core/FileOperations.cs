@@ -110,7 +110,7 @@ internal static class FileOperations
                     foreach (VirtualFile file in folder)
                     {
                         progress.CancellationToken.ThrowIfCancellationRequested();
-                        await writer.WriteLineAsync(file.Name, progress.CancellationToken);
+                        await writer.WriteLineAsync(file.Name);
                         state.Update(1, progress);
                     }
                 }
@@ -137,16 +137,16 @@ internal static class FileOperations
                 int index = 1;
                 using (StreamWriter writer = new(targetStream))
                 {
-                    await writer.WriteLineAsync("[playlist]", progress.CancellationToken);
+                    await writer.WriteLineAsync("[playlist]");
                     foreach (VirtualFile file in folder)
                     {
                         progress.CancellationToken.ThrowIfCancellationRequested();
-                        await writer.WriteLineAsync($"File{index}={file.FullPath}", progress.CancellationToken);
+                        await writer.WriteLineAsync($"File{index}={file.FullPath}");
                         index++;
                         state.Update(1, progress);
 
                     }
-                    await writer.WriteLineAsync($"NumberOfEntries={index - 1}", progress.CancellationToken);
+                    await writer.WriteLineAsync($"NumberOfEntries={index - 1}");
                 }
             }
         }

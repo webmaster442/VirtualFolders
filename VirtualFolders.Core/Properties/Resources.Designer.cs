@@ -151,11 +151,29 @@ namespace VirtualFolders.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File notes.
+        /// </summary>
+        internal static string IdFileNotes {
+            get {
+                return ResourceManager.GetString("IdFileNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to create virtual folder: {0}.
         /// </summary>
         internal static string IdFolderCreateFailed {
             get {
                 return ResourceManager.GetString("IdFolderCreateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder notes.
+        /// </summary>
+        internal static string IdFolderNotes {
+            get {
+                return ResourceManager.GetString("IdFolderNotes", resourceCulture);
             }
         }
         

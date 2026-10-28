@@ -1,6 +1,11 @@
-﻿using Microsoft.Win32;
+﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Interop;
+
+using Microsoft.Win32;
+
 using VirtualFolders.Core;
 using VirtualFolders.Ui;
 
@@ -83,5 +88,51 @@ internal sealed class Dialogs : Core.IDialogs
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
         };
         return dialog;
+    }
+
+    public bool TryEditText(string title, string initialText, int maxChars, [NotNullWhen(true)] out string? result)
+    {
+        var dialog = new TextEditDialog(maxChars)
+        {
+            Title = title,
+            Owner = Application.Current.MainWindow,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+        };
+        dialog.TextEditor.Text = initialText;
+        if (dialog.ShowDialog() == true)
+        {
+            result = dialog.TextEditor.Text;
+            return true;
+        }
+        else
+        {
+            result = null;
+            return false;
+        }
+    }
+
+    public void ShellPropertiesDialog(string file)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(file);
+
+        const uint SeeMaskInvokeIdList = 0x0000000C;
+        const uint SeeMaskNoAsync = 0x00000100;
+
+        Window? owner = Application.Current.MainWindow;
+
+        var info = new Native.ShellExecuteInfo
+        {
+            Size = (uint)Marshal.SizeOf<Native.ShellExecuteInfo>(),
+            Mask = SeeMaskInvokeIdList | SeeMaskNoAsync,
+            Window = owner is null ? IntPtr.Zero : new WindowInteropHelper(owner).Handle,
+            Verb = "properties",
+            File = System.IO.Path.GetFullPath(file),
+            Show = 1, // SW_SHOWNORMAL
+        };
+
+        if (!Native.ShellExecuteExW(ref info))
+        {
+            throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
     }
 }

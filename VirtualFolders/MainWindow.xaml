@@ -148,6 +148,23 @@
 
             <!--  Tabs  -->
             <Fluent:RibbonTabItem Header="Folder">
+                <Fluent:RibbonGroupBox
+                    Header="Folder"
+                    IsEnabled="{Binding HasOpenFolder}">
+                    <Fluent:Button
+                        Command="{Binding ActualFolder.EditNotesCommand}"
+                        Header="Notes...">
+                        <Fluent:Button.LargeIcon>
+                            <Canvas
+                                Width="24"
+                                Height="24">
+                                <Path
+                                    Data="M15 3H5A2 2 0 0 0 3 5V19A2 2 0 0 0 5 21H19A2 2 0 0 0 21 19V9L15 3M19 19H5V5H14V10H19M17 14H7V12H17M14 17H7V15H14"
+                                    Fill="#0063b1" />
+                            </Canvas>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Add">
                     <Fluent:Button
                         Command="{Binding AddFilesCommand}"
@@ -287,9 +304,39 @@
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
+
+            <!--  Context sensitive tab  -->
             <Fluent:RibbonTabItem
                 Group="{Binding Source={x:Reference SelectedGroup}}"
                 Header="Selected">
+                <Fluent:RibbonGroupBox Header="File">
+                    <Fluent:Button
+                        Command="{Binding ActualFolder.EditFileNotesCommand}"
+                        Header="Notes...">
+                        <Fluent:Button.LargeIcon>
+                            <Canvas
+                                Width="24"
+                                Height="24">
+                                <Path
+                                    Data="M15 3H5A2 2 0 0 0 3 5V19A2 2 0 0 0 5 21H19A2 2 0 0 0 21 19V9L15 3M19 19H5V5H14V10H19M17 14H7V12H17M14 17H7V15H14"
+                                    Fill="#0063b1" />
+                            </Canvas>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
+                    <Fluent:Button
+                        Command="{Binding ActualFolder.FilePropertiesCommand}"
+                        Header="Properties...">
+                        <Fluent:Button.LargeIcon>
+                            <Canvas
+                                Width="24"
+                                Height="24">
+                                <Path
+                                    Data="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"
+                                    Fill="#0063b1" />
+                            </Canvas>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Export">
                     <Fluent:Button
                         Command="{Binding ExportToFolderCommand}"
@@ -432,6 +479,10 @@
                                     <MenuItem
                                         Command="{Binding RemoveSelectedCommand}"
                                         Header="Remove" />
+                                    <Separator />
+                                    <MenuItem
+                                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.Tag.ActualFolder.FilePropertiesCommand}"
+                                        Header="Properties..." />
                                 </ContextMenu>
                             </DataGrid.ContextMenu>
                             <DataGrid.Columns>
@@ -460,8 +511,17 @@
                                                 VerticalAlignment="Center"
                                                 FontSize="{Binding ElementName=ZoomSlider, Path=Value}"
                                                 Text="{Binding Name}"
-                                                TextDecorations="{Binding IsAvailable, Converter={ui:IsAvailableConverter}}"
-                                                ToolTip="{Binding FullPath}">
+                                                TextDecorations="{Binding IsAvailable, Converter={ui:IsAvailableConverter}}">
+                                                <TextBlock.ToolTip>
+                                                    <StackPanel Width="300">
+                                                        <TextBlock
+                                                            FontWeight="Bold"
+                                                            Text="{Binding FullPath}" />
+                                                        <TextBlock
+                                                            Margin="4"
+                                                            Text="{Binding Notes}" />
+                                                    </StackPanel>
+                                                </TextBlock.ToolTip>
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
                                                         <Style.Triggers>

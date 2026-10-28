@@ -31,6 +31,8 @@ public sealed partial class VirtualFolder : ObservableObject
     [ObservableProperty]
     public partial FileSize TotalSize { get; private set; }
 
+    public string Notes { get; set; }
+
     public BulkObservableCollection<VirtualFile> Files { get; }
 
     private readonly IDialogs _dialogs;
@@ -41,10 +43,13 @@ public sealed partial class VirtualFolder : ObservableObject
         _fileName = fileName;
         _dialogs = dialogs;
         _clipboard = clipboard;
+
         LastModified = DateTime.Now;
         Name = Path.GetFileName(_fileName);
         Files = new BulkObservableCollection<VirtualFile>();
         SelectedItems = new BulkObservableCollection<VirtualFile>();
+        Notes = string.Empty;
+        
         Files.CollectionChanged += OnChange;
         SelectedItems.CollectionChanged += OnSelectionChanged;
     }
@@ -55,6 +60,8 @@ public sealed partial class VirtualFolder : ObservableObject
         RemoveSelectedCommand.NotifyCanExecuteChanged();
         OpenSelectedCommand.NotifyCanExecuteChanged();
         CopySelectedPathCommand.NotifyCanExecuteChanged();
+        EditFileNotesCommand.NotifyCanExecuteChanged();
+        FilePropertiesCommand.NotifyCanExecuteChanged();
     }
 
     private void OnChange(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -70,6 +77,41 @@ public sealed partial class VirtualFolder : ObservableObject
         LastModified = DateTime.Now;
         await VirtualFolderFile.SaveTo(_fileName, this, CancellationToken.None);
     }
+
+    [RelayCommand]
+    public async Task EditNotes()
+    {
+        if (_dialogs.TryEditText(Resources.IdFolderNotes, Notes, FormatLimits.FolderNotes, out string? newNotes))
+        {
+            Notes = newNotes;
+            await Save();
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelectedItemCheck))]
+    public void FileProperties()
+    {
+        if (SelectedItems.Count > 0)
+        {
+            var files = string.Join(Environment.NewLine, SelectedItems.Select(f => f.FullPath));
+            _dialogs.ShellPropertiesDialog(files);
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelectedItemCheck))]
+    public async Task EditFileNotes()
+    {
+        if (SelectedItems.Count > 0
+            && _dialogs.TryEditText(Resources.IdFileNotes, SelectedItems[0].Notes, FormatLimits.FileNotes, out string? newNotes))
+        {
+            foreach (var file in SelectedItems)
+            {
+                file.Notes = newNotes;
+            }
+            await Save();
+        }
+    }
+
 
     [RelayCommand(CanExecute = nameof(HasSelectedItemCheck))]
     public async Task RemoveSelected()

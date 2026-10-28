@@ -171,4 +171,10 @@
   <data name="IdRemoveSelectedItems" xml:space="preserve">
     <value>Are you sure you want to remove the selected items?</value>
   </data>
+  <data name="IdFolderNotes" xml:space="preserve">
+    <value>Folder notes</value>
+  </data>
+  <data name="IdFileNotes" xml:space="preserve">
+    <value>File notes</value>
+  </data>
 </root>

@@ -17,6 +17,11 @@ internal static class VirtualFolderFile
             return null;
 
         VirtualFolder result = new(fileName, dialogs, clipboard);
+
+        result.Notes = folder.Notes.Length > FormatLimits.FolderNotes
+            ? folder.Notes[..FormatLimits.FolderNotes]
+            : folder.Notes;
+
         foreach (var file in folder.Files)
         {
             result.Files.Add(VirtualFile.CreateFromFilePath(file.Path, file.Added.ToLocalTime()));
@@ -34,11 +39,15 @@ internal static class VirtualFolderFile
             {
                 Name = virtualFolder.Name,
                 Version = "1.0",
+                Notes = virtualFolder.Notes,
                 LastModified = virtualFolder.LastModified,
                 Files = virtualFolder.Files.Select(x => new VirtualFileV1
                 {
                     Path = x.FullPath,
-                    Added = x.Added
+                    Added = x.Added,
+                    Notes = x.Notes.Length > FormatLimits.FileNotes
+                        ? x.Notes[..FormatLimits.FileNotes]
+                        : x.Notes
                 }).ToArray()
             };
 

@@ -6,6 +6,8 @@ public sealed class VirtualFile
     public required string Extension { get; init; }
     public required string FullPath { get; init; }
     public required DateTime Added { get; init; }
+    public required string Notes { get; set; }
+
     public bool IsAvailable { get; init; }
     public FileSize FileSize { get; init; }
     public DateTime LastModified { get; init; }
@@ -23,6 +25,7 @@ public sealed class VirtualFile
                 IsAvailable = false,
                 Extension = Path.GetExtension(filePath),
                 FileSize = 0,
+                Notes = string.Empty,
                 LastModified = DateTime.MinValue.Date,
                 Created = DateTime.MinValue.Date,
                 Attributes = FileAttributes.Normal,
@@ -42,7 +45,8 @@ public sealed class VirtualFile
             Created = fileInfo.CreationTime,
             FileSize = fileInfo.Length,
             IsAvailable = true,
-            LastModified = fileInfo.LastWriteTime
+            LastModified = fileInfo.LastWriteTime,
+            Notes = string.Empty
         };
     }
 }
