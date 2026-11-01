@@ -726,7 +726,9 @@
                                 HorizontalAlignment="Left"
                                 Value="{Binding ElementName=ZoomSlider, Path=Value}">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Font size:" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Text="Font size:" />
                                     <Slider
                                         x:Name="ZoomSlider"
                                         Width="200"
@@ -736,7 +738,9 @@
                                         TickFrequency="1"
                                         ToolTip="{Binding ElementName=ZoomSlider, Path=Value}"
                                         Value="16" />
-                                    <TextBlock Text="{Binding ElementName=ZoomSlider, Path=Value}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Text="{Binding ElementName=ZoomSlider, Path=Value}" />
                                 </StackPanel>
                             </Fluent:StatusBarItem>
 

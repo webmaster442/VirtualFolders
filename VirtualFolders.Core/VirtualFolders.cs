@@ -117,7 +117,7 @@ public sealed partial class VirtualFolders : ObservableObject
         if (ActualFolder is not null &&
             _dialogs.TryOpenFiles(Resources.IdAddFiles, _filterstring, out IEnumerable<string>? files))
         {
-            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x)));
+            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x, null)));
             await ActualFolder.Save();
         }
     }
@@ -129,7 +129,7 @@ public sealed partial class VirtualFolders : ObservableObject
             _dialogs.TryOpenFolder(Resources.IdAddFolder, out string? folder))
         {
             var files = Directory.GetFiles(folder, "*.*", SearchOption.TopDirectoryOnly);
-            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x)));
+            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x, null)));
             await ActualFolder.Save();
         }
     }
@@ -140,7 +140,7 @@ public sealed partial class VirtualFolders : ObservableObject
         if (ActualFolder is not null
             && files.Length > 0)
         {
-            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x)));
+            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x, null)));
             await ActualFolder.Save();
         }
     }

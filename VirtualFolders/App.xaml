@@ -8,8 +8,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
-
-                <!-- change "Cobalt" to the color you want -->
                 <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/Light.Olive.xaml" />
             </ResourceDictionary.MergedDictionaries>
 

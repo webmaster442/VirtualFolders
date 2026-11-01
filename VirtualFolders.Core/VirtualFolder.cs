@@ -104,9 +104,11 @@ public sealed partial class VirtualFolder : ObservableObject
         if (SelectedItems.Count > 0
             && _dialogs.TryEditText(Resources.IdFileNotes, SelectedItems[0].Notes, FormatLimits.FileNotes, out string? newNotes))
         {
-            foreach (var file in SelectedItems)
+            foreach (var file in SelectedItems.ToList())
             {
+                var index = Files.IndexOf(file);
                 file.Notes = newNotes;
+                Files[index] = file;
             }
             await Save();
         }

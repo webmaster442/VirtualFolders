@@ -22,6 +22,13 @@ internal static class FileOperations
                 progress.CancellationToken.ThrowIfCancellationRequested();
                 state.NewFile(file.FileSize, progress);
 
+                if (file.IsUrl)
+                {
+                    using var urlFile = File.Create(Path.Combine(destinationDirectory, Path.ChangeExtension(file.Name, ".url")));
+                    await file.WriteAsUrlFileAsync(urlFile, progress.CancellationToken);
+                    continue;
+                }
+
                 using (FileStream readStream = File.OpenRead(file.FullPath))
                 {
                     string destinationFilePath = Path.Combine(destinationDirectory, Path.ChangeExtension(file.Name, file.Extension));
@@ -64,6 +71,14 @@ internal static class FileOperations
                 {
                     foreach (VirtualFile file in folder)
                     {
+                        if (file.IsUrl)
+                        {
+                            var urlEntry = archive.CreateEntry(Path.ChangeExtension(file.Name, ".url"), CompressionLevel.Optimal);
+                            using var urlStream = await urlEntry.OpenAsync(progress.CancellationToken);
+                            await file.WriteAsUrlFileAsync(urlStream, progress.CancellationToken);
+                            continue;
+                        }
+
                         progress.CancellationToken.ThrowIfCancellationRequested();
                         state.NewFile(file.FileSize, progress);
 
@@ -110,7 +125,7 @@ internal static class FileOperations
                     foreach (VirtualFile file in folder)
                     {
                         progress.CancellationToken.ThrowIfCancellationRequested();
-                        await writer.WriteLineAsync(file.Name);
+                        await writer.WriteLineAsync(file.FullPath);
                         state.Update(1, progress);
                     }
                 }

@@ -24,7 +24,7 @@ internal static class VirtualFolderFile
 
         foreach (var file in folder.Files)
         {
-            result.Files.Add(VirtualFile.CreateFromFilePath(file.Path, file.Added.ToLocalTime()));
+            result.Files.Add(VirtualFile.CreateFromFilePath(file.Path, file.Notes, file.Added.ToLocalTime()));
         }
 
         return result;

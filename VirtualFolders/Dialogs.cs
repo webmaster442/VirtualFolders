@@ -96,6 +96,7 @@ internal sealed class Dialogs : Core.IDialogs
         {
             Title = title,
             Owner = Application.Current.MainWindow,
+            Height = Application.Current.MainWindow.Height * 0.75,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
         };
         dialog.TextEditor.Text = initialText;
