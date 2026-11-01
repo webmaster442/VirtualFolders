@@ -96,9 +96,9 @@ internal sealed class Dialogs : Core.IDialogs
         {
             Title = title,
             Owner = Application.Current.MainWindow,
-            Height = Application.Current.MainWindow.Height * 0.75,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
         };
+        dialog.Height= Math.Min(dialog.Height, Application.Current.MainWindow.ActualHeight * 0.75);
         dialog.TextEditor.Text = initialText;
         if (dialog.ShowDialog() == true)
         {
@@ -108,6 +108,27 @@ internal sealed class Dialogs : Core.IDialogs
         else
         {
             result = null;
+            return false;
+        }
+    }
+
+    public bool TryAddUrl(string title, [NotNullWhen(true)] out string? url)
+    {
+        var dialog = new UrlEditDialog
+        {
+            Title = title,
+            Owner = Application.Current.MainWindow,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+        };
+        dialog.Height = Math.Min(dialog.Height, Application.Current.MainWindow.ActualHeight * 0.75);
+        if (dialog.ShowDialog() == true)
+        {
+            url = dialog.TbUrl.Text;
+            return true;
+        }
+        else
+        {
+            url = null;
             return false;
         }
     }

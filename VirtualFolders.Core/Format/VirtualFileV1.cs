@@ -12,4 +12,10 @@ internal sealed record class VirtualFileV1
 
     [JsonPropertyName("notes")]
     public required string Notes { get; init; }
+
+    [JsonPropertyName("url")]
+    public required bool IsUrl { get; init; }
+
+    [JsonPropertyName("displayName")]
+    public required string? DisplayName { get; init; }
 }

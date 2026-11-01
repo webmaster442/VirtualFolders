@@ -24,7 +24,7 @@ internal static class VirtualFolderFile
 
         foreach (var file in folder.Files)
         {
-            result.Files.Add(VirtualFile.CreateFromFilePath(file.Path, file.Notes, file.Added.ToLocalTime()));
+            result.Files.Add(VirtualFile.CreateFromLoaded(file));
         }
 
         return result;
@@ -45,6 +45,8 @@ internal static class VirtualFolderFile
                 {
                     Path = x.FullPath,
                     Added = x.Added,
+                    IsUrl = x.IsUrl,
+                    DisplayName = x.IsUrl ? x.Name : null,
                     Notes = x.Notes.Length > FormatLimits.FileNotes
                         ? x.Notes[..FormatLimits.FileNotes]
                         : x.Notes

@@ -28,6 +28,9 @@ public sealed partial class VirtualFolder : ObservableObject
     private bool HasSelectedItemCheck()
         => HasSelectedItems;
 
+    private bool HasSelectedItemsThatAreNotUrls()
+        => SelectedItems.Any(x => !x.IsUrl);
+
     [ObservableProperty]
     public partial FileSize TotalSize { get; private set; }
 
@@ -88,13 +91,15 @@ public sealed partial class VirtualFolder : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(HasSelectedItemCheck))]
+    [RelayCommand(CanExecute = nameof(HasSelectedItemsThatAreNotUrls))]
     public void FileProperties()
     {
-        if (SelectedItems.Count > 0)
+        var files = SelectedItems.Where(x => !x.IsUrl).ToList();
+
+        if (files.Count > 0)
         {
-            var files = string.Join(Environment.NewLine, SelectedItems.Select(f => f.FullPath));
-            _dialogs.ShellPropertiesDialog(files);
+            var parameters = string.Join(" ", files.Select(f => $"\"{f.FullPath}\""));
+            _dialogs.ShellPropertiesDialog(parameters);
         }
     }
 

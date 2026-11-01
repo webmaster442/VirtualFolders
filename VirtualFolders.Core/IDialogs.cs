@@ -9,6 +9,7 @@ public interface IDialogs
     bool TryOpenFile(string title, string filter, [NotNullWhen(true)] out string? file);
     bool TryOpenFolder(string title, [NotNullWhen(true)] out string? folder);
     bool TryEditText(string title, string initialText, int maxChars, [NotNullWhen(true)] out string? result);
+    bool TryAddUrl(string title, [NotNullWhen(true)] out string? url);
     void Error(string message, string title);
     bool Confirm(string message, string title);
     bool YesNo(string message, string title);

@@ -44,6 +44,7 @@ public sealed partial class VirtualFolders : ObservableObject
         ExportZipCommand.NotifyCanExecuteChanged();
         ExportM3uCommand.NotifyCanExecuteChanged();
         ExportPlsCommand.NotifyCanExecuteChanged();
+        AddUrlCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]
@@ -117,7 +118,7 @@ public sealed partial class VirtualFolders : ObservableObject
         if (ActualFolder is not null &&
             _dialogs.TryOpenFiles(Resources.IdAddFiles, _filterstring, out IEnumerable<string>? files))
         {
-            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x, null)));
+            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x)));
             await ActualFolder.Save();
         }
     }
@@ -129,7 +130,18 @@ public sealed partial class VirtualFolders : ObservableObject
             _dialogs.TryOpenFolder(Resources.IdAddFolder, out string? folder))
         {
             var files = Directory.GetFiles(folder, "*.*", SearchOption.TopDirectoryOnly);
-            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x, null)));
+            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x)));
+            await ActualFolder.Save();
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasOpenFolderCheck))]
+    public async Task AddUrl()
+    {
+        if (ActualFolder is not  null
+            && _dialogs.TryAddUrl(Resources.IdAddUrl, out string? url))
+        {
+            ActualFolder.Files.Add(VirtualFile.CreateFromUrl(url));
             await ActualFolder.Save();
         }
     }
@@ -140,7 +152,7 @@ public sealed partial class VirtualFolders : ObservableObject
         if (ActualFolder is not null
             && files.Length > 0)
         {
-            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x, null)));
+            ActualFolder.Files.AddRange(files.Select(x => VirtualFile.CreateFromFilePath(x)));
             await ActualFolder.Save();
         }
     }
@@ -151,7 +163,7 @@ public sealed partial class VirtualFolders : ObservableObject
         if (ActualFolder is not null
             && _dialogs.YesNo(Resources.IdRemoveNotExistingItems, Resources.IdConfirm))
         {
-            var notExistingFiles = ActualFolder.Files.Where(x => !File.Exists(x.FullPath)).ToList();
+            var notExistingFiles = ActualFolder.Files.Where(x => !File.Exists(x.FullPath) && !x.IsUrl).ToList();
             ActualFolder.Files.RemoveRange(notExistingFiles);
             await ActualFolder.Save();
         }

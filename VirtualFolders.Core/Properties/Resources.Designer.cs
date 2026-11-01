@@ -79,6 +79,15 @@ namespace VirtualFolders.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Url....
+        /// </summary>
+        internal static string IdAddUrl {
+            get {
+                return ResourceManager.GetString("IdAddUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compressing files....
         /// </summary>
         internal static string IdCompressingFiles {

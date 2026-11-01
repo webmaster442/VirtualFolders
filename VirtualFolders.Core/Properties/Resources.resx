@@ -177,4 +177,7 @@
   <data name="IdFileNotes" xml:space="preserve">
     <value>File notes</value>
   </data>
+  <data name="IdAddUrl" xml:space="preserve">
+    <value>Add Url...</value>
+  </data>
 </root>

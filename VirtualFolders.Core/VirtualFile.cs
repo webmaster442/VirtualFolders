@@ -1,8 +1,10 @@
-﻿namespace VirtualFolders.Core;
+﻿using VirtualFolders.Core.Format;
+
+namespace VirtualFolders.Core;
 
 public sealed class VirtualFile
 {
-    public required string Name { get; init; }
+    public required string Name { get; set; }
     public required string Extension { get; init; }
     public required string FullPath { get; init; }
     public required DateTime Added { get; init; }
@@ -20,19 +22,19 @@ public sealed class VirtualFile
         {
             if (created.IsFile)
             {
-                return CreateFromFilePath(created.LocalPath, null, added);
+                return CreateFromFilePath(created.LocalPath, added);
             }
 
             return new VirtualFile
             {
                 FullPath = created.AbsoluteUri.ToString(),
-                Added = added ?? DateTime.MinValue.Date,
-                IsAvailable = false,
-                Extension = Path.GetExtension(url),
+                Added = added ?? DateTime.Now,
+                IsAvailable = true,
+                Extension = "url",
                 FileSize = url.CalculateSize(),
                 Notes = string.Empty,
-                LastModified = DateTime.MinValue.Date,
-                Created = DateTime.MinValue.Date,
+                LastModified = added ?? DateTime.Now,
+                Created = added ?? DateTime.Now,
                 Attributes = FileAttributes.Normal,
                 Name = Path.GetFileNameWithoutExtension(url),
                 IsUrl = true
@@ -42,24 +44,31 @@ public sealed class VirtualFile
         throw new InvalidOperationException($"Invalid URL: {url}");
     }
 
-    internal static VirtualFile CreateFromFilePath(string filePath, string? notes, DateTime? added = null)
+    
+    internal static VirtualFile CreateNotExisting(string filePath, DateTime? added = null)
+    {
+        return new VirtualFile
+        {
+            FullPath = filePath,
+            Added = added ?? DateTime.MinValue.Date,
+            IsAvailable = false,
+            Extension = Path.GetExtension(filePath),
+            FileSize = 0,
+            Notes = string.Empty,
+            LastModified = DateTime.MinValue.Date,
+            Created = DateTime.MinValue.Date,
+            Attributes = FileAttributes.Normal,
+            Name = Path.GetFileNameWithoutExtension(filePath),
+            IsUrl = false
+        };
+    }
+
+
+    internal static VirtualFile CreateFromFilePath(string filePath, DateTime? added = null)
     {
         if (!File.Exists(filePath))
         {
-            return new VirtualFile
-            {
-                FullPath = filePath,
-                Added = added ?? DateTime.MinValue.Date,
-                IsAvailable = false,
-                Extension = Path.GetExtension(filePath),
-                FileSize = 0,
-                Notes = notes ?? string.Empty,
-                LastModified = DateTime.MinValue.Date,
-                Created = DateTime.MinValue.Date,
-                Attributes = FileAttributes.Normal,
-                Name = Path.GetFileNameWithoutExtension(filePath),
-                IsUrl = false
-            };
+            return CreateNotExisting(filePath, added);
         }
 
         FileInfo fileInfo = new(filePath);
@@ -75,8 +84,23 @@ public sealed class VirtualFile
             FileSize = fileInfo.Length,
             IsAvailable = true,
             LastModified = fileInfo.LastWriteTime,
-            Notes = notes ?? string.Empty,
+            Notes = string.Empty,
             IsUrl = false
         };
+    }
+
+    internal static VirtualFile CreateFromLoaded(VirtualFileV1 file)
+    {
+        VirtualFile created = file.IsUrl 
+            ? CreateFromUrl(file.Path, file.Added) 
+            : CreateFromFilePath(file.Path, file.Added);
+
+        if (!string.IsNullOrEmpty(file.DisplayName))
+        {
+            created.Name = file.DisplayName;
+        }
+
+        created.Notes = file.Notes;
+        return created;
     }
 }
