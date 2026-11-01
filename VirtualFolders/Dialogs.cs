@@ -6,7 +6,7 @@ using System.Windows.Interop;
 
 using Microsoft.Win32;
 
-using VirtualFolders.Core;
+using VirtualFolders.Core.Exporters;
 using VirtualFolders.Ui;
 
 namespace VirtualFolders;
@@ -62,7 +62,7 @@ internal sealed class Dialogs : Core.IDialogs
             Title = title,
         };
         bool result = ofd.ShowDialog() == true;
-        folder = result ? ofd.SafeFolderName : null;
+        folder = result ? ofd.FolderName : null;
         return result;
     }
 
@@ -79,7 +79,7 @@ internal sealed class Dialogs : Core.IDialogs
         return result;
     }
 
-    public IFileOperationProgress ShowFileOperationProgress(string title)
+    public IExportProgress ShowFileOperationProgress(string title)
     {
         var dialog = new ProgressDialog
         {

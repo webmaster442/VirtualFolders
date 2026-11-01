@@ -1,6 +1,6 @@
-﻿namespace VirtualFolders.Core;
+﻿namespace VirtualFolders.Core.Exporters;
 
-public interface IFileOperationProgress
+public interface IExportProgress
 {
     void SetTotalSize(long fileSize);
     void SetCurrentFileSize(long fileSize);

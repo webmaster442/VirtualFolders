@@ -1,14 +1,16 @@
 ﻿using Fluent;
+
 using System.Windows;
 using System.Windows.Controls;
-using VirtualFolders.Core;
+
+using VirtualFolders.Core.Exporters;
 
 namespace VirtualFolders.Ui;
 
 /// <summary>
 /// Interaction logic for ProgressDialog.xaml
 /// </summary>
-public partial class ProgressDialog : Window, Core.IFileOperationProgress
+public partial class ProgressDialog : Window, IExportProgress
 {
     private readonly CancellationTokenSource _tokenSource;
  
@@ -97,7 +99,7 @@ public partial class ProgressDialog : Window, Core.IFileOperationProgress
         });
     }
 
-    void IFileOperationProgress.ShowDialog()
+    void IExportProgress.ShowDialog()
     {
         Show();
     }

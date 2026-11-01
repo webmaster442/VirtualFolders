@@ -1,9 +1,9 @@
 ﻿using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 using VirtualFolders.Core.Format;
 using VirtualFolders.Core.Properties;
@@ -65,6 +65,7 @@ public sealed partial class VirtualFolder : ObservableObject
         CopySelectedPathCommand.NotifyCanExecuteChanged();
         EditFileNotesCommand.NotifyCanExecuteChanged();
         FilePropertiesCommand.NotifyCanExecuteChanged();
+        WeakReferenceMessenger.Default.Send(new SelectionChangedMessage(SelectedItems));
     }
 
     private void OnChange(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

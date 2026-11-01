@@ -265,7 +265,8 @@
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Export">
                     <Fluent:Button
-                        Command="{Binding ExportSelectedToFolderCommand}"
+                        Command="{Binding ExportFolderCommand}"
+                        CommandParameter="{Binding ActualFolder.Files}"
                         Header="Copy to folder...">
                         <Fluent:Button.LargeIcon>
                             <Canvas
@@ -278,7 +279,8 @@
                         </Fluent:Button.LargeIcon>
                     </Fluent:Button>
                     <Fluent:Button
-                        Command="{Binding ExportSelectedZipCommand}"
+                        Command="{Binding ExportZipCommand}"
+                        CommandParameter="{Binding ActualFolder.Files}"
                         Header="Create .zip...">
                         <Fluent:Button.LargeIcon>
                             <Canvas
@@ -301,14 +303,16 @@
                             </Canvas>
                         </Fluent:DropDownButton.Icon>
                         <Fluent:MenuItem
-                            Command="{Binding ExportSelectedM3uCommand}"
+                            Command="{Binding ExportM3uCommand}"
+                            CommandParameter="{Binding ActualFolder.Files}"
                             Header="M3U..">
                             <Fluent:MenuItem.Icon>
                                 <TextBlock Text="M" />
                             </Fluent:MenuItem.Icon>
                         </Fluent:MenuItem>
                         <Fluent:MenuItem
-                            Command="{Binding ExportSelectedPlsCommand}"
+                            Command="{Binding ExportPlsCommand}"
+                            CommandParameter="{Binding ActualFolder.Files}"
                             Header="PLS..">
                             <Fluent:MenuItem.Icon>
                                 <TextBlock Text="P" />
@@ -352,7 +356,8 @@
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Export">
                     <Fluent:Button
-                        Command="{Binding ExportToFolderCommand}"
+                        Command="{Binding ExportFolderCommand}"
+                        CommandParameter="{Binding ActualFolder.SelectedItems}"
                         Header="Copy to folder...">
                         <Fluent:Button.LargeIcon>
                             <Canvas
@@ -366,6 +371,7 @@
                     </Fluent:Button>
                     <Fluent:Button
                         Command="{Binding ExportZipCommand}"
+                        CommandParameter="{Binding ActualFolder.SelectedItems}"
                         Header="Create .zip...">
                         <Fluent:Button.LargeIcon>
                             <Canvas
@@ -389,6 +395,7 @@
                         </Fluent:DropDownButton.Icon>
                         <Fluent:MenuItem
                             Command="{Binding ExportM3uCommand}"
+                            CommandParameter="{Binding ActualFolder.SelectedItems}"
                             Header="M3U..">
                             <Fluent:MenuItem.Icon>
                                 <TextBlock Text="M" />
@@ -396,6 +403,7 @@
                         </Fluent:MenuItem>
                         <Fluent:MenuItem
                             Command="{Binding ExportPlsCommand}"
+                            CommandParameter="{Binding ActualFolder.SelectedItems}"
                             Header="PLS..">
                             <Fluent:MenuItem.Icon>
                                 <TextBlock Text="P" />

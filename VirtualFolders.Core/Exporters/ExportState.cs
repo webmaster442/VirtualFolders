@@ -1,8 +1,8 @@
-﻿namespace VirtualFolders.Core;
+﻿namespace VirtualFolders.Core.Exporters;
 
-internal sealed class FileOperationState
+internal sealed class ExportState
 {
-    private long _totalFilesSize;
+    private readonly long _totalFilesSize;
     private long _currentFileSize;
     private long _totalProcessed;
     private long _currentFileProcessed;
@@ -11,21 +11,21 @@ internal sealed class FileOperationState
 
     private DateTime _lastUpdate;
 
-    public FileOperationState(long totalFilesSize)
+    public ExportState(long totalFilesSize)
     {
         _lastUpdate = DateTime.MinValue;
         _totalFilesSize = totalFilesSize;
         _currentFileSize = 0;
     }
 
-    public void Initialize(IFileOperationProgress progress)
+    public void Initialize(IExportProgress progress)
     {
         progress.SetTotalSize(_totalFilesSize);
         progress.SetCurrentFileProgress(0);
         progress.SetTotalFileProgress(0);
     }
 
-    public void NewFile(FileSize fileSize, IFileOperationProgress progress)
+    public void NewFile(FileSize fileSize, IExportProgress progress)
     {
         _currentFileProcessed = 0;
         _currentFileSize = fileSize.TotalBytes;
@@ -36,7 +36,7 @@ internal sealed class FileOperationState
         _lastUpdate = DateTime.Now;
     }
 
-    public void Update(int read, IFileOperationProgress progress)
+    public void Update(int read, IExportProgress progress)
     {
         _currentFileProcessed += read;
         _totalProcessed += read;
@@ -51,7 +51,7 @@ internal sealed class FileOperationState
         }
     }
 
-    public void Finished(IFileOperationProgress progress)
+    public void Finished(IExportProgress progress)
     {
         _currentFileProcessed = _currentFileSize;
         _totalProcessed = _totalFilesSize;

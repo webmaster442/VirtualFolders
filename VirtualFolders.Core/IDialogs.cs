@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+using VirtualFolders.Core.Exporters;
+
 namespace VirtualFolders.Core;
 
 public interface IDialogs
@@ -14,5 +16,5 @@ public interface IDialogs
     bool Confirm(string message, string title);
     bool YesNo(string message, string title);
     void ShellPropertiesDialog(string file);
-    IFileOperationProgress ShowFileOperationProgress(string title);
+    IExportProgress ShowFileOperationProgress(string title);
 }
