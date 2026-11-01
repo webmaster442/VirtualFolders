@@ -23,14 +23,14 @@ internal sealed class DirectoryExporter : IExporter
 
                 if (file.IsUrl)
                 {
-                    using var urlFile = File.Create(Path.Combine(destination, Path.ChangeExtension(file.Name, ".url")));
+                    using var urlFile = File.Create(Path.Combine(destination, file.NameWithExtension(".url")));
                     await file.WriteAsUrlFileAsync(urlFile, progress.CancellationToken);
                     continue;
                 }
 
                 using (FileStream readStream = File.OpenRead(file.FullPath))
                 {
-                    string destinationFilePath = Path.Combine(destination, Path.ChangeExtension(file.Name, file.Extension));
+                    string destinationFilePath = Path.Combine(destination, file.NameWithExtension());
                     using (FileStream writeStream = File.Create(destinationFilePath))
                     {
                         do

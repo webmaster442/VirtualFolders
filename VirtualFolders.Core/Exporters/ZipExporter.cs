@@ -25,7 +25,7 @@ internal sealed class ZipExporter : IExporter
                     {
                         if (file.IsUrl)
                         {
-                            var urlEntry = archive.CreateEntry(Path.ChangeExtension(file.Name, ".url"), CompressionLevel.Optimal);
+                            var urlEntry = archive.CreateEntry(file.NameWithExtension(".url"), CompressionLevel.Optimal);
                             using var urlStream = await urlEntry.OpenAsync(progress.CancellationToken);
                             await file.WriteAsUrlFileAsync(urlStream, progress.CancellationToken);
                             continue;
@@ -34,7 +34,7 @@ internal sealed class ZipExporter : IExporter
                         progress.CancellationToken.ThrowIfCancellationRequested();
                         state.NewFile(file.FileSize, progress);
 
-                        var entry = archive.CreateEntry(Path.ChangeExtension(file.Name, file.Extension), CompressionLevel.Optimal);
+                        var entry = archive.CreateEntry(file.NameWithExtension(), CompressionLevel.Optimal);
                         using (var writeStream = await entry.OpenAsync(progress.CancellationToken))
                         {
                             using (var readStream = File.OpenRead(file.FullPath))

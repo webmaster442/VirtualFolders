@@ -1,6 +1,4 @@
-﻿using Fluent;
-
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 using VirtualFolders.Core.Exporters;
@@ -100,7 +98,5 @@ public partial class ProgressDialog : Window, IExportProgress
     }
 
     void IExportProgress.ShowDialog()
-    {
-        Show();
-    }
+        => Show();
 }

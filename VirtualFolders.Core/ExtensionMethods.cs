@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Buffers;
+using System.Text;
 
 namespace VirtualFolders.Core;
 
@@ -15,6 +16,24 @@ public static class ExtensionMethods
             URL={virtualFile.FullPath}
             Comment={virtualFile.Notes}
             """);
+        }
+
+        public byte[] WriteAsBytes()
+        {
+            string content= $"""
+            [InternetShortcut]
+            URL={virtualFile.FullPath}
+            Comment={virtualFile.Notes}
+            """;
+            var encoding = new UTF8Encoding(false); // UTF-8 without BOM
+            return encoding.GetBytes(content);
+        }
+
+        public string NameWithExtension(string? overrideExtension = null)
+        {
+            return !string.IsNullOrEmpty(overrideExtension)
+                ? $"{virtualFile.Name}.{overrideExtension}"
+                : $"{virtualFile.Name}.{virtualFile.Extension}";
         }
     }
 
