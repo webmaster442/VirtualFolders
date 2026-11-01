@@ -4,6 +4,8 @@ namespace VirtualFolders.Core.Exporters;
 
 internal sealed class DirectoryExporter : IExporter
 {
+    public FileSize MaxSizeLimit => FileSize.MaxValue;
+
     public async Task Execute(IReadOnlyList<VirtualFile> folder, string destination, IExportProgress progress)
     {
         ExportState state = new(folder.Sum(x => x.FileSize.TotalBytes));

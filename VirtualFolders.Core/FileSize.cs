@@ -11,11 +11,18 @@ public readonly record struct FileSize :
     IAdditionOperators<FileSize, FileSize, FileSize>,
     ISubtractionOperators<FileSize, FileSize, FileSize>,
     IMultiplyOperators<FileSize, long, FileSize>,
-    IDivisionOperators<FileSize, long, FileSize>
+    IDivisionOperators<FileSize, long, FileSize>,
+    IMinMaxValue<FileSize>
 {
     private readonly long _bytes;
 
     public long TotalBytes => _bytes;
+
+    public static FileSize MaxValue
+        => new(long.MaxValue);
+
+    public static FileSize MinValue
+        => new(0L);
 
     public FileSize(long bytes)
     {

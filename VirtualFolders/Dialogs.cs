@@ -79,9 +79,20 @@ internal sealed class Dialogs : Core.IDialogs
         return result;
     }
 
-    public IExportProgress ShowFileOperationProgress(string title)
+    public IExportProgress CreateFileOperationProgress(string title)
     {
         var dialog = new ProgressDialog
+        {
+            Title = title,
+            Owner = Application.Current.MainWindow,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+        };
+        return dialog;
+    }
+
+    public IIndeterminateExportProgress CreateInteterminateFileOperationProgress(string title)
+    {
+        var dialog = new ProgressDialogInteterminate
         {
             Title = title,
             Owner = Application.Current.MainWindow,

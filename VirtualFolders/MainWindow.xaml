@@ -278,11 +278,8 @@
                             </Canvas>
                         </Fluent:Button.LargeIcon>
                     </Fluent:Button>
-                    <Fluent:Button
-                        Command="{Binding ExportZipCommand}"
-                        CommandParameter="{Binding ActualFolder.Files}"
-                        Header="Create .zip...">
-                        <Fluent:Button.LargeIcon>
+                    <Fluent:DropDownButton Header="Archive...">
+                        <Fluent:DropDownButton.LargeIcon>
                             <Canvas
                                 Width="24"
                                 Height="24">
@@ -290,8 +287,24 @@
                                     Data="M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6M20 18H16V16H14V18H4V8H14V10H16V8H20V18M16 12V10H18V12H16M14 12H16V14H14V12M18 16H16V14H18V16Z"
                                     Fill="#6b69d6" />
                             </Canvas>
-                        </Fluent:Button.LargeIcon>
-                    </Fluent:Button>
+                        </Fluent:DropDownButton.LargeIcon>
+                        <Fluent:MenuItem
+                            Command="{Binding ExportZipCommand}"
+                            CommandParameter="{Binding ActualFolder.Files}"
+                            Header="Create .zip...">
+                            <Fluent:MenuItem.Icon>
+                                <TextBlock Text="Z" />
+                            </Fluent:MenuItem.Icon>
+                        </Fluent:MenuItem>
+                        <Fluent:MenuItem
+                            Command="{Binding ExportTarCommand}"
+                            CommandParameter="{Binding ActualFolder.Files}"
+                            Header="Create .tar...">
+                            <Fluent:MenuItem.Icon>
+                                <TextBlock Text="T" />
+                            </Fluent:MenuItem.Icon>
+                        </Fluent:MenuItem>
+                    </Fluent:DropDownButton>
                     <Fluent:DropDownButton Header="Playlist">
                         <Fluent:DropDownButton.Icon>
                             <Canvas
@@ -369,11 +382,8 @@
                             </Canvas>
                         </Fluent:Button.LargeIcon>
                     </Fluent:Button>
-                    <Fluent:Button
-                        Command="{Binding ExportZipCommand}"
-                        CommandParameter="{Binding ActualFolder.SelectedItems}"
-                        Header="Create .zip...">
-                        <Fluent:Button.LargeIcon>
+                    <Fluent:DropDownButton Header="Archive...">
+                        <Fluent:DropDownButton.LargeIcon>
                             <Canvas
                                 Width="24"
                                 Height="24">
@@ -381,8 +391,24 @@
                                     Data="M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6M20 18H16V16H14V18H4V8H14V10H16V8H20V18M16 12V10H18V12H16M14 12H16V14H14V12M18 16H16V14H18V16Z"
                                     Fill="#6b69d6" />
                             </Canvas>
-                        </Fluent:Button.LargeIcon>
-                    </Fluent:Button>
+                        </Fluent:DropDownButton.LargeIcon>
+                        <Fluent:MenuItem
+                            Command="{Binding ExportZipCommand}"
+                            CommandParameter="{Binding ActualFolder.SelectedItems}"
+                            Header="Create .zip...">
+                            <Fluent:MenuItem.Icon>
+                                <TextBlock Text="Z" />
+                            </Fluent:MenuItem.Icon>
+                        </Fluent:MenuItem>
+                        <Fluent:MenuItem
+                            Command="{Binding ExportTarCommand}"
+                            CommandParameter="{Binding ActualFolder.SelectedItems}"
+                            Header="Create .tar...">
+                            <Fluent:MenuItem.Icon>
+                                <TextBlock Text="T" />
+                            </Fluent:MenuItem.Icon>
+                        </Fluent:MenuItem>
+                    </Fluent:DropDownButton>
                     <Fluent:DropDownButton Header="Playlist">
                         <Fluent:DropDownButton.Icon>
                             <Canvas

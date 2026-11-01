@@ -142,7 +142,7 @@
     <value>Playlist export...</value>
   </data>
   <data name="IdExportZip" xml:space="preserve">
-    <value>Select destination zip file</value>
+    <value>Select destination ZIP file</value>
   </data>
   <data name="IdFileLoadFailed" xml:space="preserve">
     <value>File load failed</value>
@@ -179,5 +179,17 @@
   </data>
   <data name="IdAddUrl" xml:space="preserve">
     <value>Add Url...</value>
+  </data>
+  <data name="IdExportTar" xml:space="preserve">
+    <value>Select destination TAR file</value>
+  </data>
+  <data name="IdIsoVolumeLabel" xml:space="preserve">
+    <value>Enter ISO Image volume label</value>
+  </data>
+  <data name="IdExportIso" xml:space="preserve">
+    <value>Select destination ISO file</value>
+  </data>
+  <data name="IdProcessingFiles" xml:space="preserve">
+    <value>Processing files. Please wait...</value>
   </data>
 </root>

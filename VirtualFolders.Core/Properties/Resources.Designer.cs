@@ -133,6 +133,15 @@ namespace VirtualFolders.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select destination ISO file.
+        /// </summary>
+        internal static string IdExportIso {
+            get {
+                return ResourceManager.GetString("IdExportIso", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Playlist export....
         /// </summary>
         internal static string IdExportPlaylist {
@@ -142,7 +151,16 @@ namespace VirtualFolders.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select destination zip file.
+        ///   Looks up a localized string similar to Select destination TAR file.
+        /// </summary>
+        internal static string IdExportTar {
+            get {
+                return ResourceManager.GetString("IdExportTar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select destination ZIP file.
         /// </summary>
         internal static string IdExportZip {
             get {
@@ -196,6 +214,15 @@ namespace VirtualFolders.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter ISO Image volume label.
+        /// </summary>
+        internal static string IdIsoVolumeLabel {
+            get {
+                return ResourceManager.GetString("IdIsoVolumeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Virtual Folder....
         /// </summary>
         internal static string IdNewVirtualFolder {
@@ -210,6 +237,15 @@ namespace VirtualFolders.Core.Properties {
         internal static string IdOpenVirtualFolder {
             get {
                 return ResourceManager.GetString("IdOpenVirtualFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing files. Please wait....
+        /// </summary>
+        internal static string IdProcessingFiles {
+            get {
+                return ResourceManager.GetString("IdProcessingFiles", resourceCulture);
             }
         }
         

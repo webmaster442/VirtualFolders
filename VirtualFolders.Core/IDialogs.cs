@@ -16,5 +16,6 @@ public interface IDialogs
     bool Confirm(string message, string title);
     bool YesNo(string message, string title);
     void ShellPropertiesDialog(string file);
-    IExportProgress ShowFileOperationProgress(string title);
+    IExportProgress CreateFileOperationProgress(string title);
+    IIndeterminateExportProgress CreateInteterminateFileOperationProgress(string title);
 }

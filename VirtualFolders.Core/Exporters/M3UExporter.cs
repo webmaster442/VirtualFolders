@@ -2,6 +2,8 @@
 
 internal sealed class M3UExporter : IExporter
 {
+    public FileSize MaxSizeLimit => FileSize.MaxValue;
+
     public async Task Execute(IReadOnlyList<VirtualFile> folder, string destination, IExportProgress progress)
     {
         ExportState state = new(folder.Count);

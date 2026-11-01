@@ -5,6 +5,8 @@ namespace VirtualFolders.Core.Exporters;
 
 internal sealed class ZipExporter : IExporter
 {
+    public FileSize MaxSizeLimit => FileSize.GigaByte * 2;
+
     public async Task Execute(IReadOnlyList<VirtualFile> folder, string destination, IExportProgress progress)
     {
         ExportState state = new(folder.Sum(x => x.FileSize.TotalBytes));
