@@ -199,7 +199,8 @@ public sealed partial class VirtualFolders : ObservableObject, IRecipient<Select
     [RelayCommand(CanExecute = nameof(ExportCheck))]
     public async Task ExportFolder(IReadOnlyList<VirtualFile> files)
     {
-        if (ActualFolder is not null
+        if (ActualFolder is not null 
+            && files?.Count > 0
             && _dialogs.TryOpenFolder(Resources.IdExportFolder, out string? targetFolder))
         {
             IExportProgress progress = _dialogs.CreateFileOperationProgress(Resources.IdCopyFiles);
@@ -212,6 +213,7 @@ public sealed partial class VirtualFolders : ObservableObject, IRecipient<Select
     public async Task ExportZip(IReadOnlyList<VirtualFile> files)
     {
         if (ActualFolder is not null
+            && files?.Count > 0
             && _dialogs.TrySaveFile(Resources.IdExportZip, "Zip Files (*.zip)|*.zip", out string? targetFile))
         {
             IExportProgress progress = _dialogs.CreateFileOperationProgress(Resources.IdCompressingFiles);
@@ -224,10 +226,15 @@ public sealed partial class VirtualFolders : ObservableObject, IRecipient<Select
     public async Task ExportM3u(IReadOnlyList<VirtualFile> files)
     {
         if (ActualFolder is not null
+            && files?.Count > 0
             && _dialogs.TrySaveFile(Resources.IdExportPlaylist, "M3U Files (*.m3u)|*.m3u", out string? targetFile))
         {
             IExportProgress progress = _dialogs.CreateFileOperationProgress(Resources.IdExportPlaylist);
             var exporter = new Exporters.M3UExporter();
+            if (!exporter.IsWithinSizeLimit(files, _dialogs))
+            {
+                return;
+            }
             await exporter.Execute(files, targetFile, progress);
         }
     }
@@ -236,10 +243,15 @@ public sealed partial class VirtualFolders : ObservableObject, IRecipient<Select
     public async Task ExportPls(IReadOnlyList<VirtualFile> files)
     {
         if (ActualFolder is not null
+            && files?.Count > 0
             && _dialogs.TrySaveFile(Resources.IdExportPlaylist, "PLS Files (*.pls)|*.pls", out string? targetFile))
         {
             IExportProgress progress = _dialogs.CreateFileOperationProgress(Resources.IdExportPlaylist);
             var exporter = new Exporters.PlsExporter();
+            if (!exporter.IsWithinSizeLimit(files, _dialogs))
+            {
+                return;
+            }
             await exporter.Execute(files, targetFile, progress);
         }
     }
@@ -248,10 +260,15 @@ public sealed partial class VirtualFolders : ObservableObject, IRecipient<Select
     public async Task ExportTar(IReadOnlyList<VirtualFile> files)
     {
         if (ActualFolder is not null
+            && files?.Count > 0
             && _dialogs.TrySaveFile(Resources.IdExportTar, "TAR Files (*.tar)|*.tar", out string? targetFile))
         {
-            IExportProgress progress = _dialogs.CreateFileOperationProgress(Resources.IdProcessingFiles);
+            IIndeterminateExportProgress progress = _dialogs.CreateInteterminateFileOperationProgress(Resources.IdProcessingFiles);
             var exporter = new Exporters.TarExporter();
+            if (!exporter.IsWithinSizeLimit(files, _dialogs))
+            {
+                return;
+            }
             await exporter.Execute(files, targetFile, progress);
         }
     }
@@ -260,11 +277,16 @@ public sealed partial class VirtualFolders : ObservableObject, IRecipient<Select
     public async Task ExportIso(IReadOnlyList<VirtualFile> files)
     {
         if (ActualFolder is not null
+            && files?.Count > 0
             && _dialogs.TryEditText(Resources.IdIsoVolumeLabel, "", 256, out string? volumeLabel)
             && _dialogs.TrySaveFile(Resources.IdExportIso, "ISO Files (*.iso)|*.iso", out string? targetFile))
         {
             IIndeterminateExportProgress progress = _dialogs.CreateInteterminateFileOperationProgress(Resources.IdProcessingFiles);
             var exporter = new Exporters.IsoExporter(volumeLabel);
+            if (!exporter.IsWithinSizeLimit(files, _dialogs))
+            {
+                return;
+            }
             await exporter.Execute(files, targetFile, progress);
         }
     }

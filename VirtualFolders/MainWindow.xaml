@@ -332,6 +332,20 @@
                             </Fluent:MenuItem.Icon>
                         </Fluent:MenuItem>
                     </Fluent:DropDownButton>
+                    <Fluent:Button
+                        Command="{Binding ExportIsoCommand}"
+                        CommandParameter="{Binding ActualFolder.Files}"
+                        Header="Export to ISO...">
+                        <Fluent:Button.LargeIcon>
+                            <Canvas
+                                Width="24"
+                                Height="24">
+                                <Path
+                                    Data="M12,14C10.89,14 10,13.1 10,12C10,10.89 10.89,10 12,10C13.11,10 14,10.89 14,12A2,2 0 0,1 12,14M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"
+                                    Fill="#6b69d6" />
+                            </Canvas>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
@@ -436,6 +450,20 @@
                             </Fluent:MenuItem.Icon>
                         </Fluent:MenuItem>
                     </Fluent:DropDownButton>
+                    <Fluent:Button
+                        Command="{Binding ExportIsoCommand}"
+                        CommandParameter="{Binding ActualFolder.SelectedItems}"
+                        Header="Export to ISO...">
+                        <Fluent:Button.LargeIcon>
+                            <Canvas
+                                Width="24"
+                                Height="24">
+                                <Path
+                                    Data="M12,14C10.89,14 10,13.1 10,12C10,10.89 10.89,10 12,10C13.11,10 14,10.89 14,12A2,2 0 0,1 12,14M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"
+                                    Fill="#6b69d6" />
+                            </Canvas>
+                        </Fluent:Button.LargeIcon>
+                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:Ribbon.ContextualGroups>

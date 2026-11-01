@@ -1,7 +1,6 @@
 ﻿namespace VirtualFolders.Core.Exporters;
 
-internal interface IExporter
+internal interface IExporter : IHasSizeLimit
 {
-    FileSize MaxSizeLimit { get; }
     Task Execute(IReadOnlyList<VirtualFile> folder, string destination, IExportProgress progress);
 }

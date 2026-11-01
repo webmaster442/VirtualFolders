@@ -1,10 +1,25 @@
-﻿using System.Buffers;
-using System.Text;
+﻿using System.Text;
+
+using VirtualFolders.Core.Exporters;
 
 namespace VirtualFolders.Core;
 
-public static class ExtensionMethods
+internal static class ExtensionMethods
 {
+    extension(IHasSizeLimit hasSizeLimit)
+    {
+        public bool IsWithinSizeLimit(IReadOnlyList<VirtualFile> files, IDialogs dialogs)
+        {
+            var size = files.Sum(f => f.FileSize.TotalBytes);
+            if (size > hasSizeLimit.MaxSizeLimit.TotalBytes)
+            {
+                dialogs.Error($"The total size of the selected files ({new FileSize(size)}) exceeds the maximum allowed size of {hasSizeLimit.MaxSizeLimit}. Please select fewer files or smaller files.", "Error");
+                return false;
+            }
+            return true;
+        }
+    }
+
     extension(VirtualFile virtualFile)
     {
         public async Task WriteAsUrlFileAsync(Stream target, CancellationToken cancellationToken)

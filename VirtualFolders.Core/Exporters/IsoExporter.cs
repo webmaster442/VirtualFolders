@@ -11,6 +11,8 @@ internal sealed class IsoExporter : IIndeterminateExporter
         _volumeIdentifier = volumeIdentifier;
     }
 
+    public FileSize MaxSizeLimit => FileSize.GigaByte * 25;
+
     public async Task Execute(IReadOnlyList<VirtualFile> folder, string destination, IIndeterminateExportProgress progress)
     {
         progress.ShowDialog();
@@ -38,6 +40,7 @@ internal sealed class IsoExporter : IIndeterminateExporter
         }
         finally
         {
+            progress.Finished();
             progress.Close();
         }
     }
